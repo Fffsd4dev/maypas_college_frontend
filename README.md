@@ -1,2 +1,2 @@
-# eduvalt
-# nextjs template by AliThemes
+# Maypas College
+#  
