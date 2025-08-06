@@ -1,1 +1,1 @@
-self.__REACT_LOADABLE_MANIFEST={"..\\components\\sections\\Course1.js -> ../elements/PortfolioFilter1":{"id":"..\\components\\sections\\Course1.js -> ../elements/PortfolioFilter1","files":["static/chunks/components_elements_PortfolioFilter1_js.js"]}}
+self.__REACT_LOADABLE_MANIFEST={}
