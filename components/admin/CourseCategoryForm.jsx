@@ -1,12 +1,12 @@
 import { useState, useRef } from 'react';
 
-export default function CourseCategoryForm({ initial, onSubmit, onCancel }) {
+export default function CourseCategoryForm({ initial, onSubmit, onCancel, loading }) {
   const [form, setForm] = useState(
     initial || {
       name: '',
       excerpt: '',
       description: '',
-      featured_image: '',
+      featured_image: null,
     }
   );
   const [errors, setErrors] = useState({});
@@ -67,8 +67,24 @@ export default function CourseCategoryForm({ initial, onSubmit, onCancel }) {
         {errors.featured_image && <span className="err">{errors.featured_image}</span>}
       </div>
       <div className="form-actions">
-        <button type="submit" className="save-btn">Save</button>
-        {onCancel && <button type="button" className="cancel-btn" onClick={onCancel}>Cancel</button>}
+        <button type="submit" className="save-btn" disabled={loading}>
+          {loading
+            ? initial
+              ? 'Updating Course Category...'
+              : 'Creating Course Category...'
+            : 'Proceed'}
+        </button>
+        {onCancel && (
+          <button
+            type="button"
+            className="cancel-btn"
+            onClick={onCancel}
+            disabled={loading}
+            style={loading ? { background: '#f0f0f0', color: '#aaa', cursor: 'not-allowed' } : {}}
+          >
+            Cancel
+          </button>
+        )}
       </div>
       <style jsx>{`
         .admin-form { background: #fff; padding: 2rem; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); margin-bottom: 2rem; }
@@ -76,7 +92,9 @@ export default function CourseCategoryForm({ initial, onSubmit, onCancel }) {
         input, textarea { width: 100%; padding: 0.6rem; border: 1px solid #e0e0e0; border-radius: 4px; margin-bottom: 1rem; font-size: 1rem; }
         .form-actions { display: flex; gap: 1rem; }
         .save-btn { background: #4f8cff; color: #fff; border: none; padding: 0.7rem 2rem; border-radius: 4px; font-weight: 600; cursor: pointer; }
+        .save-btn[disabled] { background: #b3d1ff !important; color: #fff !important; cursor: not-allowed !important; }
         .cancel-btn { background: #eee; color: #222; border: none; padding: 0.7rem 2rem; border-radius: 4px; font-weight: 600; cursor: pointer; }
+        .cancel-btn[disabled] { background: #f0f0f0 !important; color: #aaa !important; cursor: not-allowed !important; }
         .err { color: #ff4f4f; font-size: 0.95em; }
       `}</style>
     </form>

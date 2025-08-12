@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react';
 
-export default function CourseForm({ initial, onSubmit, onCancel }) {
+export default function CourseForm({ initial, categories, onSubmit, onCancel, loading }) {
   const [form, setForm] = useState(
     initial || {
       course_category_id: '',
@@ -8,7 +8,7 @@ export default function CourseForm({ initial, onSubmit, onCancel }) {
       excerpt: '',
       description: '',
       price: '',
-      featured_image: '',
+      featured_image: null,
     }
   );
   const [preview, setPreview] = useState(initial?.featured_image || '');
@@ -36,8 +36,20 @@ export default function CourseForm({ initial, onSubmit, onCancel }) {
     <form className="admin-form" onSubmit={handleSubmit}>
       <div className="form-row">
         <div>
-          <label>Category ID</label>
-          <input name="course_category_id" value={form.course_category_id} onChange={handleChange} required />
+          <label>Category</label>
+          <select
+            name="course_category_id"
+            value={form.course_category_id}
+            onChange={handleChange}
+            required
+          >
+            <option value="">Select Category</option>
+            {categories.map((cat) => (
+              <option key={cat.id} value={cat.id}>
+                {cat.name}
+              </option>
+            ))}
+          </select>
         </div>
         <div>
           <label>Title</label>
@@ -64,9 +76,16 @@ export default function CourseForm({ initial, onSubmit, onCancel }) {
         {preview && <img src={preview} alt="preview" style={{ width: 100, marginTop: 8, borderRadius: 6 }} />}
       </div>
       <div className="form-actions">
-        <button type="submit" className="save-btn">Save</button>
-        {onCancel && <button type="button" className="cancel-btn" onClick={onCancel}>Cancel</button>}
+        <button type="submit" className="save-btn" disabled={loading}>
+          {loading
+            ? initial
+              ? 'Updating Course...'
+              : 'Creating Course...'
+            : 'Save'}
+        </button>
+        {onCancel && <button type="button" className="cancel-btn" onClick={onCancel} disabled={loading}>Cancel</button>}
       </div>
+     
       <style jsx>{`
         .admin-form {
           background: #fff;
@@ -82,7 +101,7 @@ export default function CourseForm({ initial, onSubmit, onCancel }) {
         }
         .form-row > div { flex: 1; }
         label { display: block; font-weight: 500; margin-bottom: 0.4rem; }
-        input, textarea {
+        input, textarea, select {
           width: 100%;
           padding: 0.6rem;
           border: 1px solid #e0e0e0;

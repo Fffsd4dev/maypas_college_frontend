@@ -1,25 +1,24 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Sidebar from '../../components/admin/Sidebar';
 import CourseTable from '../../components/admin/CourseTable';
 import CourseForm from '../../components/admin/CourseForm';
-
-const initialCourses = [
-  {
-    id: 1,
-    course_category_id: '101',
-    title: 'React for Beginners',
-    excerpt: 'Learn React from scratch.',
-    description: 'A full React course for absolute beginners.',
-    price: 49,
-    featured_image: '',
-  },
-  // ...more mock data
-];
+import { getCategories } from '../../util/courseCategoryApi';
 
 export default function AdminCourses() {
-  const [courses, setCourses] = useState(initialCourses);
+  const [courses, setCourses] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [editing, setEditing] = useState(null);
   const [showForm, setShowForm] = useState(false);
+
+  useEffect(() => {
+    getCategories()
+      .then((data) => {
+        const arr = Array.isArray(data) ? data : data.data || [];
+        setCategories(arr);
+      })
+      .catch(() => setCategories([]));
+  }, []);
+
 
   const handleAdd = () => {
     setEditing(null);
@@ -47,6 +46,7 @@ export default function AdminCourses() {
     setEditing(null);
   };
 
+ 
   return (
     <div className="admin-layout">
       <Sidebar />
@@ -58,6 +58,7 @@ export default function AdminCourses() {
         {showForm && (
           <CourseForm
             initial={editing}
+            categories={categories}
             onSubmit={handleSubmit}
             onCancel={() => { setShowForm(false); setEditing(null); }}
           />
@@ -91,7 +92,7 @@ export default function AdminCourses() {
           font-size: 1rem;
         }
         @media (max-width: 900px) {
-          main { padding: 1rem; }
+          main { padding: 1rem; width: 70%; }
         }
       `}</style>
     </div>

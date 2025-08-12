@@ -20,8 +20,8 @@ export default function CourseCategoryTable({ categories, onEdit, onDelete }) {
           {categories.map((cat) => (
             <tr key={cat.id}>
               <td>
-                {cat.featured_image ? (
-                  <img src={cat.featured_image} alt="" style={{ width: 60, borderRadius: 6 }} />
+                {cat.featured_image_path ? (
+                  <img src={process.env.NEXT_PUBLIC_API_BASE_URL + "/" + cat.featured_image_path} alt="" style={{ width: 60, borderRadius: 6 }} />
                 ) : (
                   <span style={{ color: '#aaa' }}>No image</span>
                 )}

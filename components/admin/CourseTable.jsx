@@ -7,7 +7,7 @@ export default function CourseTable({ courses, onEdit, onDelete }) {
         <thead>
           <tr>
             <th>Image</th>
-            <th>Category ID</th>
+            <th>Course Category</th>
             <th>Title</th>
             <th>Excerpt</th>
             <th>Price</th>
@@ -29,7 +29,7 @@ export default function CourseTable({ courses, onEdit, onDelete }) {
                   <span style={{ color: '#aaa' }}>No image</span>
                 )}
               </td>
-              <td>{course.course_category_id}</td>
+              <td>{course.name}</td>
               <td>{course.title}</td>
               <td>{course.excerpt}</td>
               <td>${course.price}</td>
