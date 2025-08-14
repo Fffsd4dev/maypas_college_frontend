@@ -89,7 +89,7 @@ export default function Sidebar() {
           display: none;
         }
         .hamburger {
-          background: none;
+          background: #ea2f38;
           border: none;
           color: #fff;
           cursor: pointer;

@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 
 export default function CourseForm({ initial, categories, onSubmit, onCancel, loading }) {
   const [form, setForm] = useState(
@@ -8,11 +8,27 @@ export default function CourseForm({ initial, categories, onSubmit, onCancel, lo
       excerpt: '',
       description: '',
       price: '',
-      featured_image: null,
+      featured_image_path: null,
     }
   );
-  const [preview, setPreview] = useState(initial?.featured_image || '');
+      useEffect(() => {
+      if (initial) setForm(initial);
+    }, [initial]);
+  
+  const [errors, setErrors] = useState({});
+  const [preview, setPreview] = useState(initial?.featured_image_path || '');
   const fileRef = useRef();
+
+    const validate = () => {
+    const errs = {};
+    if (!form.course_category_id) errs.course_category_id = 'Category is required';
+    if (!form.title) errs.title = 'Title is required';
+    if (!form.excerpt) errs.excerpt = 'Excerpt is required';
+    if (!form.description) errs.description = 'Description is required';
+    if (!form.price) errs.price = 'Price is required';
+    setErrors(errs);
+    return Object.keys(errs).length === 0;
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -21,15 +37,19 @@ export default function CourseForm({ initial, categories, onSubmit, onCancel, lo
 
   const handleImage = (e) => {
     const file = e.target.files[0];
-    if (file) {
-      setForm((f) => ({ ...f, featured_image: URL.createObjectURL(file) }));
+    if (file && file.type.startsWith('image/')) {
+      setForm((f) => ({ ...f, featured_image_path: file }));
       setPreview(URL.createObjectURL(file));
+    } else {
+      setErrors((errs) => ({ ...errs, featured_image_path: 'Only image files allowed' }));
     }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit(form);
+    if (validate()) {
+      onSubmit(form);
+    }
   };
 
   return (
@@ -74,6 +94,7 @@ export default function CourseForm({ initial, categories, onSubmit, onCancel, lo
         <label>Featured Image</label>
         <input type="file" accept="image/*" ref={fileRef} onChange={handleImage} />
         {preview && <img src={preview} alt="preview" style={{ width: 100, marginTop: 8, borderRadius: 6 }} />}
+        {errors.featured_image_path && <span className="err">{errors.featured_image_path}</span>}
       </div>
       <div className="form-actions">
         <button type="submit" className="save-btn" disabled={loading}>
@@ -81,9 +102,19 @@ export default function CourseForm({ initial, categories, onSubmit, onCancel, lo
             ? initial
               ? 'Updating Course...'
               : 'Creating Course...'
-            : 'Save'}
+            : 'Proceed'}
         </button>
-        {onCancel && <button type="button" className="cancel-btn" onClick={onCancel} disabled={loading}>Cancel</button>}
+         {onCancel && (
+          <button
+            type="button"
+            className="cancel-btn"
+            onClick={onCancel}
+            disabled={loading}
+            style={loading ? { background: '#f0f0f0', color: '#aaa', cursor: 'not-allowed' } : {}}
+          >
+            Cancel
+          </button>
+        )}
       </div>
      
       <style jsx>{`
@@ -122,6 +153,7 @@ export default function CourseForm({ initial, categories, onSubmit, onCancel, lo
           font-weight: 600;
           cursor: pointer;
         }
+          .save-btn[disabled] { background: #b3d1ff !important; color: #fff !important; cursor: not-allowed !important; }
         .cancel-btn {
           background: #eee;
           color: #222;
@@ -131,9 +163,11 @@ export default function CourseForm({ initial, categories, onSubmit, onCancel, lo
           font-weight: 600;
           cursor: pointer;
         }
-        @media (max-width: 700px) {
-          .form-row { flex-direction: column; gap: 0; }
-        }
+          .cancel-btn[disabled] { background: #f0f0f0 !important; color: #aaa !important; cursor: not-allowed !important; }
+        .err { color: #ff4f4f; font-size: 0.95em; }
+        // @media (max-width: 700px) {
+        //   .form-row { flex-direction: column; gap: 0; }
+        // }
       `}</style>
     </form>
   );

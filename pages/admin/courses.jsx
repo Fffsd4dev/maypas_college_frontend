@@ -3,12 +3,20 @@ import Sidebar from '../../components/admin/Sidebar';
 import CourseTable from '../../components/admin/CourseTable';
 import CourseForm from '../../components/admin/CourseForm';
 import { getCategories } from '../../util/courseCategoryApi';
+import { fetchCourses, createCourse, updateCourse, deleteCourse } from '@/util/courseApi';
+import AdminProtectedRoute from '@/components/admin/AdminProtectedRoute';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function AdminCourses() {
   const [courses, setCourses] = useState([]);
   const [categories, setCategories] = useState([]);
   const [editing, setEditing] = useState(null);
   const [showForm, setShowForm] = useState(false);
+  const [loading, setLoading] = useState(true); // for initial fetch
+    const [actionLoading, setActionLoading] = useState(false); // for add/edit/delete actions
+    const [fetchError, setFetchError] = useState('');
+  
 
   useEffect(() => {
     getCategories()
@@ -18,6 +26,25 @@ export default function AdminCourses() {
       })
       .catch(() => setCategories([]));
   }, []);
+
+   useEffect(() => {
+      setLoading(true);
+      fetchCourses()
+        .then((data) => {
+          const coursesArray = Array.isArray(data)
+            ? data
+            : Array.isArray(data?.data)
+            ? data.data
+            : [];
+          setCourses(coursesArray);
+          setFetchError('');
+        })
+        .catch(() => {
+          setFetchError('Failed to fetch courses. Please try again later.');
+          setCourses([]);
+        })
+        .finally(() => setLoading(false));
+    }, []);
 
 
   const handleAdd = () => {
@@ -30,40 +57,94 @@ export default function AdminCourses() {
     setShowForm(true);
   };
 
-  const handleDelete = (id) => {
-    if (confirm('Delete this course?')) {
-      setCourses(courses.filter((c) => c.id !== id));
-    }
-  };
+   const handleDelete = async (id) => {
+     if (confirm('Delete this course?')) {
+       setActionLoading(true);
+       try {
+         await deleteCourse(id);
+         setCourses(courses.filter((c) => c.id !== id));
+         toast.success('Course deleted successfully!');
+       } catch {
+         toast.error('Failed to delete course.');
+       } finally {
+         setActionLoading(false);
+       }
+       setCourses(courses.filter((c) => c.id !== id));
+     }
+   };
 
-  const handleSubmit = (data) => {
-    if (editing) {
-      setCourses(courses.map((c) => (c.id === editing.id ? { ...c, ...data } : c)));
-    } else {
-      setCourses([{ ...data, id: Date.now() }, ...courses]);
+
+  const handleSubmit = async (data) => {
+    setActionLoading(true);
+    try {
+      if (editing) {
+        const updated = await updateCourse(editing.id, data);
+        setCourses(courses.map((c) => (c.id === editing.id ? updated : c)));
+        toast.success('Course updated successfully!');
+      } else {
+        const created = await createCourse(data);
+        console.log(created);
+        setCourses([created, ...courses]);
+        toast.success('Course created successfully!');
+      }
+      setShowForm(false);
+      setEditing(null);
+    } catch {
+      toast.error('Failed to save course.');
+    } finally {
+      setActionLoading(false);
     }
-    setShowForm(false);
-    setEditing(null);
   };
 
  
   return (
-    <div className="admin-layout">
+   <AdminProtectedRoute>
+     <div className="admin-layout">
       <Sidebar />
       <main>
+        <ToastContainer position="top-right" autoClose={3000} />
         <div className="admin-header">
           <h1>Courses</h1>
-          <button className="add-btn" onClick={handleAdd}>+ Add Course</button>
-        </div>
-        {showForm && (
-          <CourseForm
-            initial={editing}
-            categories={categories}
-            onSubmit={handleSubmit}
+        {!showForm && (
+            <button
+              className="add-btn"
+              onClick={handleAdd}
+              disabled={actionLoading}
+              style={actionLoading ? { opacity: 0.6, pointerEvents: 'none' } : {}}
+            >
+              {actionLoading && !showForm ? 'Loading...' : '+ Add Course'}
+            </button>
+          )}
+          </div>
+                  {showForm && (
+                    <CourseForm
+                      categories={categories}
+                      setCategories={setCategories}
+                      setForm={(f) => setEditing(f)}
             onCancel={() => { setShowForm(false); setEditing(null); }}
-          />
-        )}
-        <CourseTable courses={courses} onEdit={handleEdit} onDelete={handleDelete} />
+                      loading={actionLoading}
+                      onSubmit={handleSubmit}
+                    />
+                  )}
+                  {fetchError && (
+                    <div style={{ color: '#ff4f4f', marginBottom: '1rem', textAlign: 'center' }}>
+                      {fetchError}
+                    </div>
+                  )}
+                  <CourseTable
+                    courses={courses}
+                    onEdit={handleEdit}
+                    onDelete={handleDelete}
+                    actionLoading={actionLoading}
+                  />
+                  {loading && (
+                    <div style={{
+                      position: 'absolute', left: 0, top: 0, width: '100%', height: '100%',
+                      background: 'rgba(255,255,255,0.7)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10
+                    }}>
+                      <div style={{ fontSize: 18 }}>Loading...</div>
+                    </div>
+                  )}
       </main>
       <style jsx>{`
         .admin-layout {
@@ -91,10 +172,13 @@ export default function AdminCourses() {
           cursor: pointer;
           font-size: 1rem;
         }
+                  .add-btn[disabled] { opacity: 0.6; cursor: not-allowed; }
+
         @media (max-width: 900px) {
           main { padding: 1rem; width: 70%; }
         }
       `}</style>
     </div>
+   </AdminProtectedRoute>
   );
 }

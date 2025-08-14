@@ -21,6 +21,12 @@ export async function createBlog(data) {
   Object.entries(data).forEach(([key, value]) => {
     formData.append(key, value);
   });
+  
+  // Log FormData entries
+  for (let pair of formData.entries()) {
+    console.log('FormData:', pair[0], ':', pair[1]);
+  }
+
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/contents/blog/create`, {
     method: 'POST',
     headers: { Authorization: `Bearer ${token}` },

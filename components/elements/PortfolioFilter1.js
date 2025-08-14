@@ -2,8 +2,28 @@ import data from "@/util/courses"
 import Isotope from "isotope-layout"
 import Link from "next/link"
 import { useCallback, useEffect, useRef, useState } from "react"
+import { getCategories } from '../../util/courseCategoryApi';
+import { fetchCourses } from '@/util/courseApi';
 
 export default function PortfolioFilter1() {
+  const [courses, setCourses] = useState([]);
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    getCategories()
+      .then((data) => {
+        const arr = Array.isArray(data) ? data : data.data || [];
+        setCategories(arr);
+      })
+      .catch(() => setCategories([]));
+    fetchCourses()
+      .then((data) => {
+        const arr = Array.isArray(data) ? data : data.data || [];
+        setCourses(arr);
+      })
+      .catch(() => setCourses([]));
+  }, []);
+      
     // Isotope
     const isotope = useRef()
     const [filterKey, setFilterKey] = useState("*")
@@ -50,51 +70,66 @@ export default function PortfolioFilter1() {
                     <div className="col-lg-6">
                         <div className="courses__nav-active">
                             <button className={activeBtn("*")} onClick={handleFilterKeyChange("*")}>All Courses <span>New</span></button>
-                            <button className={activeBtn("cat-one")} onClick={handleFilterKeyChange("cat-one")}>Design</button>
-                            <button className={activeBtn("cat-two")} onClick={handleFilterKeyChange("cat-two")}>Marketing</button>
-                            <button className={activeBtn("cat-three")} onClick={handleFilterKeyChange("cat-three")}>Development</button>
+         {categories.map((cat) => (
+    <button
+      key={cat.id}
+      className={activeBtn(`cat-${cat.id}`)}
+      onClick={handleFilterKeyChange(`cat-${cat.id}`)}
+    >
+      {cat.name}
+    </button>
+  ))}
                         </div>
                     </div>
                 </div>
             </div>
             <div className="row courses-active row-cols-1 row-cols-xl-3 row-cols-lg-2 row-cols-md-2 row-cols-sm-1">
-                {data.map((item, i) => (
-                    <div className={`col grid-item ${item.catcls}`} key={i}>
-                        <div className="courses__item shine__animate-item">
-                            <div className="courses__item-thumb">
-                                {item.category === "Marketing" && <Link href="#" className="courses__item-tag" style={{ backgroundColor: '#BC18E4' }}>{item.category}</Link>}
-                                {item.category === "Design" && <Link href="#" className="courses__item-tag" style={{ backgroundColor: '#04BC53' }}>{item.category}</Link>}
-                                {item.category === "Development" && <Link href="#" className="courses__item-tag" style={{ backgroundColor: '#FF109F' }}>{item.category}</Link>}
-                                <Link href={`/course/${item.id}`} className="shine__animate-link">
-                                    <img src={`/assets/img/courses/${item.logo}`} alt="img" />
-                                </Link>
-                            </div>
-                            <div className="courses__item-content">
-                                <ul className="courses__item-meta list-wrap">
-                                    <li><i className="flaticon-file" /> 05 Lessons</li>
-                                    <li><i className="flaticon-timer" /> 12h 30m</li>
-                                    <li><i className="flaticon-user-1" /> Students</li>
-                                </ul>
-                                <h5 className="title"><Link href={`/course/${item.id}`}>{item.courseTitle}</Link></h5>
-                                <div className="courses__item-rating">
-                                    <i className="fas fa-star" />
-                                    <i className="fas fa-star" />
-                                    <i className="fas fa-star" />
-                                    <i className="fas fa-star" />
-                                    <i className="fas fa-star" />
-                                    <span className="rating-count">(06)</span>
-                                </div>
-                                <div className="courses__item-bottom">
-                                    <div className="author">
-                                        <Link href="/instructor-details"><img src="/assets/img/courses/course_author.png" alt="img" /></Link>
-                                        <Link href="/instructor-details">David Millar</Link>
+                <div className="row courses-active row-cols-1 row-cols-xl-3 row-cols-lg-2 row-cols-md-2 row-cols-sm-1">
+{courses.map((course) => (
+          <div
+            className={`col grid-item cat-${course.course_category_id}`}
+            key={course.id}
+          >
+            <div className="courses__item shine__animate-item">
+              <div className="courses__item-thumb">
+                <Link
+                  href={`/course/${course.id}`}
+                  className="courses__item-tag"
+                  style={{ backgroundColor: '#4f8cff' }}
+                >
+                  {categories.find((cat) => cat.id === course.course_category_id)?.name || 'Category'}
+                </Link>
+                <Link href={`/course/${course.id}`} className="shine__animate-link">
+                  <img
+                    src={
+                      course.featured_image_path
+                        ? process.env.NEXT_PUBLIC_API_BASE_URL + '/' + course.featured_image_path
+                        : '/assets/img/courses/default.png'
+                    }
+                    alt="img"
+                  />
+                </Link>
+              </div>
+              <div className="courses__item-content">
+                <div className="author">
+                                        {/* <Link href="/instructor-details"><img src="/assets/img/courses/course_author.png" alt="img" /></Link>
+                                        <Link href="/instructor-details">David Millar</Link> */}
                                     </div>
-                                    <h5 className="price">$11.00</h5>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                ))}
+                <h5 className="title">
+                  <Link href={`/course/${course.id}`}>{course.title}</Link>
+                </h5>
+                <div className="courses__item-bottom">
+                    <div className="author">
+                                        {/* <Link href="/instructor-details"><img src="/assets/img/courses/course_author.png" alt="img" /></Link>
+                                        <Link href="/instructor-details">David Millar</Link> */}
+                                    </div>
+                  <h5 className="price">${course.price}</h5>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+</div>
             </div>
         </>
     )

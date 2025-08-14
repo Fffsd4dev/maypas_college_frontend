@@ -69,6 +69,7 @@ export default function AdminBlogs() {
         toast.success('Blog updated successfully!');
       } else {
         const created = await createBlog(data);
+        console.log(created);
         setBlogs([created, ...blogs]);
         toast.success('Blog created successfully!');
       }

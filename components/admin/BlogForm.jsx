@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 
 export default function BlogForm({ initial, onSubmit, onCancel, loading }) {
   const [form, setForm] = useState(
@@ -6,11 +6,15 @@ export default function BlogForm({ initial, onSubmit, onCancel, loading }) {
       title: '',
       slug: '',
       content: '',
-      featured_image: null,
+      featured_image_path: null,
     }
   );
+    useEffect(() => {
+    if (initial) setForm(initial);
+  }, [initial]);
+
   const [errors, setErrors] = useState({});
-  const [preview, setPreview] = useState(initial?.featured_image || '');
+  const [preview, setPreview] = useState(initial?.featured_image_path || '');
   const fileRef = useRef();
 
   const validate = () => {
@@ -30,10 +34,10 @@ export default function BlogForm({ initial, onSubmit, onCancel, loading }) {
   const handleImage = (e) => {
     const file = e.target.files[0];
     if (file && file.type.startsWith('image/')) {
-      setForm((f) => ({ ...f, featured_image: file }));
+      setForm((f) => ({ ...f, featured_image_path: file }));
       setPreview(URL.createObjectURL(file));
     } else {
-      setErrors((errs) => ({ ...errs, featured_image: 'Only image files allowed' }));
+      setErrors((errs) => ({ ...errs, featured_image_path: 'Only image files allowed' }));
     }
   };
 
@@ -64,7 +68,7 @@ export default function BlogForm({ initial, onSubmit, onCancel, loading }) {
         <label>Featured Image</label>
         <input type="file" accept="image/*" ref={fileRef} onChange={handleImage} />
         {preview && <img src={preview} alt="preview" style={{ width: 100, marginTop: 8, borderRadius: 6 }} />}
-        {errors.featured_image && <span className="err">{errors.featured_image}</span>}
+        {errors.featured_image_path && <span className="err">{errors.featured_image_path}</span>}
       </div>
       <div className="form-actions">
         <button type="submit" className="save-btn" disabled={loading}>

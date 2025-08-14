@@ -23,13 +23,13 @@ export default function CourseTable({ courses, onEdit, onDelete }) {
           {courses.map((course) => (
             <tr key={course.id}>
               <td>
-                {course.featured_image ? (
-                  <img src={course.featured_image} alt="" style={{ width: 60, borderRadius: 6 }} />
+                {course.featured_image_path ? (
+                  <img src={process.env.NEXT_PUBLIC_API_BASE_URL + "/" + course.featured_image_path} alt="" style={{ width: 60, borderRadius: 6 }} />
                 ) : (
                   <span style={{ color: '#aaa' }}>No image</span>
                 )}
               </td>
-              <td>{course.name}</td>
+              <td>{course.category.name}</td>
               <td>{course.title}</td>
               <td>{course.excerpt}</td>
               <td>${course.price}</td>
@@ -41,7 +41,8 @@ export default function CourseTable({ courses, onEdit, onDelete }) {
           ))}
         </tbody>
       </table>
-      <style jsx>{`
+      <style jsx>
+        {`
         .table-responsive { overflow-x: auto; }
         .admin-table {
           width: 100%;
@@ -68,7 +69,8 @@ export default function CourseTable({ courses, onEdit, onDelete }) {
           th, td { padding: 0.5rem 0.3rem; font-size: 0.9rem; }
           .edit-btn, .delete-btn { padding: 0.3rem 0.7rem; font-size: 0.85rem; }
         }
-      `}</style>
+      `}
+      </style>
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 
 export default function CourseCategoryForm({ initial, onSubmit, onCancel, loading }) {
   const [form, setForm] = useState(
@@ -9,6 +9,10 @@ export default function CourseCategoryForm({ initial, onSubmit, onCancel, loadin
       featured_image: null,
     }
   );
+      useEffect(() => {
+    if (initial) setForm(initial);
+  }, [initial]);
+
   const [errors, setErrors] = useState({});
   const [preview, setPreview] = useState(initial?.featured_image || '');
   const fileRef = useRef();
