@@ -66,11 +66,13 @@ export default function AdminUsers() {
     try {
       if (editing) {
         const updated = await updateUser(editing.id, data);
-        setUsers(users.map((u) => (u.id === editing.id ? updated : u)));
+        const refreshed = await fetchUsers();
+        setUsers(Array.isArray(refreshed) ? refreshed : refreshed.data || []);
         toast.success('User updated successfully!');
       } else {
         const created = await createUser(data);
-        setUsers([created, ...users]);
+        const refreshed = await fetchUsers();
+        setUsers(Array.isArray(refreshed) ? refreshed : refreshed.data || []);
         toast.success('User created successfully!');
       }
       setShowForm(false);

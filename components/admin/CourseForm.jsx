@@ -36,14 +36,14 @@ export default function CourseForm({ initial, categories, onSubmit, onCancel, lo
   };
 
   const handleImage = (e) => {
-    const file = e.target.files[0];
-    if (file && file.type.startsWith('image/')) {
-      setForm((f) => ({ ...f, featured_image_path: file }));
-      setPreview(URL.createObjectURL(file));
-    } else {
-      setErrors((errs) => ({ ...errs, featured_image_path: 'Only image files allowed' }));
-    }
-  };
+  const file = e.target.files[0];
+  if (file && file.type.startsWith('image/')) {
+    setForm((f) => ({ ...f, featured_image: file })); // <-- use featured_image
+    setPreview(URL.createObjectURL(file));
+  } else {
+    setErrors((errs) => ({ ...errs, featured_image: 'Only image files allowed' }));
+  }
+};
 
   const handleSubmit = (e) => {
     e.preventDefault();

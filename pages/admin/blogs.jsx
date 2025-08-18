@@ -65,12 +65,14 @@ export default function AdminBlogs() {
     try {
       if (editing) {
         const updated = await updateBlog(editing.id, data);
-        setBlogs(blogs.map((b) => (b.id === editing.id ? updated : b)));
+        const refreshed = await fetchBlogs();
+        setBlogs(Array.isArray(refreshed) ? refreshed : refreshed.data || []);
         toast.success('Blog updated successfully!');
       } else {
         const created = await createBlog(data);
         console.log(created);
-        setBlogs([created, ...blogs]);
+        const refreshed = await fetchBlogs();
+        setBlogs(Array.isArray(refreshed) ? refreshed : refreshed.data || []);
         toast.success('Blog created successfully!');
       }
       setShowForm(false);

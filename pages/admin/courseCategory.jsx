@@ -76,11 +76,13 @@ export default function AdminCourseCategory() {
     try {
       if (editing) {
         const updated = await updateCategory(editing.id, data);
-        setCategories(categories.map((c) => (c.id === editing.id ? updated : c)));
+        const refreshed = await getCategories();
+        setCategories(Array.isArray(refreshed) ? refreshed : refreshed.data || []);
         toast.success('Course Category updated successfully');
       } else {
         const created = await createCategory(data);
-        setCategories([{ ...created, id: Date.now() }, ...categories]);
+        const refreshed = await getCategories();
+        setCategories(Array.isArray(refreshed) ? refreshed : refreshed.data || []);
         toast.success('Course Category created successfully');
       }
       setShowForm(false);

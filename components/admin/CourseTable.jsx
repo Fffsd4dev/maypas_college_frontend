@@ -29,7 +29,7 @@ export default function CourseTable({ courses, onEdit, onDelete }) {
                   <span style={{ color: '#aaa' }}>No image</span>
                 )}
               </td>
-              <td>{course.category.name}</td>
+              <td>{course.category?.name || 'No category'}</td>
               <td>{course.title}</td>
               <td>{course.excerpt}</td>
               <td>${course.price}</td>

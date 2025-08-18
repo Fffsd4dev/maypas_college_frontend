@@ -34,7 +34,7 @@ export default function CourseCategoryForm({ initial, onSubmit, onCancel, loadin
   const handleImage = (e) => {
     const file = e.target.files[0];
     if (file && file.type.startsWith('image/')) {
-      setForm((f) => ({ ...f, featured_image: URL.createObjectURL(file) }));
+      setForm((f) => ({ ...f, featured_image: file }));
       setPreview(URL.createObjectURL(file));
     } else {
       setErrors((errs) => ({ ...errs, featured_image: 'Only image files allowed' }));

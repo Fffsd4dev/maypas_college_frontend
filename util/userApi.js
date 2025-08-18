@@ -23,7 +23,9 @@ export async function createUser(data) {
   });
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/admin/user/create`, {
     method: 'POST',
-    headers: { Authorization: `Bearer ${token}` },
+   headers: {
+      Authorization: `Bearer ${token}`,
+    },
     body: formData,
   });
   if (!res.ok) throw new Error('Failed to create user');
@@ -40,7 +42,7 @@ export async function updateUser(id, data) {
     method: 'POST',
     headers: { Authorization: `Bearer ${token}` },
     body: formData,
-  });
+  }); 
   if (!res.ok) throw new Error('Failed to update user');
   return res.json();
 }
@@ -58,7 +60,7 @@ export async function deleteUser(id) {
   const token = getToken();
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/admin/user/delete/${id}`, {
     method: 'DELETE',
-    headers: { Authorization: `Bearer ${token}` }
+    headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }
   });
   if (!res.ok) throw new Error('Failed to delete user');
   return res.json();
