@@ -24,9 +24,9 @@ export default function CourseTable({ courses, onEdit, onDelete }) {
             <tr key={course.id}>
               <td>
                 {course.featured_image_path ? (
-                  <img src={process.env.NEXT_PUBLIC_API_BASE_URL + "/" + course.featured_image_path} alt="" style={{ width: 60, borderRadius: 6 }} />
+                  <img src={process.env.NEXT_PUBLIC_API_BASE_URL + "/storage/" + course.featured_image_path} alt="" style={{ width: 60, borderRadius: 6 }} />
                 ) : (
-                  <span style={{ color: '#aaa' }}>No image</span>
+                 <span style={{ color: '#000' }}>No image</span>
                 )}
               </td>
               <td>{course.category?.name || 'No category'}</td>

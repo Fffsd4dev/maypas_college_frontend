@@ -42,7 +42,7 @@ export default function PortfolioFilter1() {
                 },
             })
         }, 1000)
-    }, [])
+    }, [courses])
     useEffect(() => {
         if (isotope.current) {
             filterKey === "*"
@@ -103,7 +103,7 @@ export default function PortfolioFilter1() {
                   <img
                     src={
                       course.featured_image_path
-                        ? process.env.NEXT_PUBLIC_API_BASE_URL + '/' + course.featured_image_path
+                        ? process.env.NEXT_PUBLIC_API_BASE_URL + '/storage/' + course.featured_image_path
                         : '/assets/img/courses/default.png'
                     }
                     alt="img"

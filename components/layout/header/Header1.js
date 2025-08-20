@@ -24,14 +24,14 @@ export default function Header1({ scroll, isMobileMenu, handleMobileMenu }) {
                                                         <li><Link href="/index-3">Home Three</Link></li>
                                                     </ul> */}
                                                 </li>
-                                                <li className="menu-item-has-children"><Link href="#">Courses</Link>
-                                                    <ul className="sub-menu">
+                                                <li className="sub-menu"><Link href="/courses">Courses</Link>
+                                                    {/* <ul className="sub-menu">
                                                         <li><Link href="/courses">All Courses</Link></li>
                                                         <li><Link href="/course-details">Course Details</Link></li>
-                                                    </ul>
+                                                    </ul> */}
                                                 </li>
-                                                <li className="menu-item-has-children"><Link href="#">Pages</Link>
-                                                    <ul className="sub-menu">
+                                                <li className="sub-menu"><Link href="/about-us">About Us</Link>
+                                                    {/* <ul className="sub-menu">
                                                         <li><Link href="/about-us">About Us</Link></li>
                                                         <li><Link href="/instructors">Our Instructors</Link></li>
                                                         <li><Link href="/instructor-details">Instructor Details</Link></li>
@@ -41,24 +41,24 @@ export default function Header1({ scroll, isMobileMenu, handleMobileMenu }) {
                                                         <li><Link href="/faq">Asked Question</Link></li>
                                                         <li><Link href="/404">404 Page</Link></li>
                                                         <li><Link href="/contact">contact</Link></li>
-                                                    </ul>
+                                                    </ul> */}
                                                 </li>
-                                                <li className="menu-item-has-children"><Link href="#">Shop</Link>
+                                                {/* <li className="menu-item-has-children"><Link href="#">Shop</Link>
                                                     <ul className="sub-menu">
                                                         <li><Link href="/shop">Shop Page</Link></li>
                                                         <li><Link href="/shop-details">Shop Details</Link></li>
                                                     </ul>
-                                                </li>
-                                                <li className="menu-item-has-children"><Link href="#">Blog</Link>
-                                                    <ul className="sub-menu">
+                                                </li> */}
+                                                <li className="sub-menu"><Link href="/blog-grid">Blog</Link>
+                                                    {/* <ul className="sub-menu">
                                                         <li><Link href="/blog-grid">Blog Grid</Link></li>
                                                         <li><Link href="/blog">Blog Standard</Link></li>
                                                         <li><Link href="/blog-details">Blog Details</Link></li>
-                                                    </ul>
+                                                    </ul> */}
                                                 </li>
                                             </ul>
                                         </div>
-                                        <div className="tgmenu__search d-none d-md-block">
+                                        {/* <div className="tgmenu__search d-none d-md-block">
                                             <form action="#" className="tgmenu__search-form">
                                                 <div className="select-grp">
                                                     <svg width={12} height={12} viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -78,19 +78,18 @@ export default function Header1({ scroll, isMobileMenu, handleMobileMenu }) {
                                                     <button type="submit"><i className="flaticon-searching" /></button>
                                                 </div>
                                             </form>
-                                        </div>
+                                        </div> */}
                                         <div className="tgmenu__action">
                                             <ul className="list-wrap">
-                                                <li className="mini-cart-icon">
+                                                {/* <li className="mini-cart-icon">
                                                     <Link href="/shop" className="cart-count">
                                                         <img src="/assets/img/icons/cart.svg" alt="cart" />
                                                         <span className="mini-cart-count">0</span>
                                                     </Link>
-                                                </li>
-                                                <li className="header-btn login-btn"><Link href="/contact" className="btn">Log in</Link>
-                                                </li>
-                                                <li className="header-btn free-btn"><Link href="/contact" className="btn">Try For
-                                                    Free</Link></li>
+                                                </li> */}
+                                                {/* <li className="header-btn login-btn"><Link href="/contact" className="btn">Log in</Link>
+                                                </li> */}
+                                                <li className="header-btn free-btn"><Link href="/contact" className="btn">Contact us</Link></li>
                                             </ul>
                                         </div>
                                     </nav>
@@ -113,8 +112,8 @@ export default function Header1({ scroll, isMobileMenu, handleMobileMenu }) {
                                         </div>
                                         <div className="tgmenu__action">
                                             <ul className="list-wrap">
-                                                <li className="header-btn login-btn"><Link href="#" className="btn">Log in</Link></li>
-                                                <li className="header-btn"><Link href="#" className="btn">Try For Free</Link></li>
+                                                {/* <li className="header-btn login-btn"><Link href="#" className="btn">Log in</Link></li> */}
+                                                <li className="header-btn"><Link href="#" className="btn">Contact Us</Link></li>
                                             </ul>
                                         </div>
                                         <div className="social-links">

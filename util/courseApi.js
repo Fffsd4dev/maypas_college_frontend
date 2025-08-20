@@ -88,8 +88,8 @@ export async function updateCourse(id, data) {
 
 export async function deleteCourse(id) {
   const token = getToken();
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/contents/v1/course/delete/${id}`, {
-    method: 'DELETE',
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/contents/course/delete/${id}`, {
+    method: 'POST',
     headers: {
       Authorization: `Bearer ${token}`,
       'Content-Type': 'application/json'

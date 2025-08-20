@@ -62,10 +62,12 @@ export default function AdminCourses() {
        setActionLoading(true);
        try {
          await deleteCourse(id);
-         setCourses(courses.filter((c) => c.id !== id));
-         toast.success('Course deleted successfully!');
+          const refreshed = await fetchCourses();
+      setCourses(Array.isArray(refreshed) ? refreshed : refreshed.data || []);
        } catch {
          toast.error('Failed to delete course.');
+         const refreshed = await fetchCourses();
+      setCourses(Array.isArray(refreshed) ? refreshed : refreshed.data || []);
        } finally {
          setActionLoading(false);
        }

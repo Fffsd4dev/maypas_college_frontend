@@ -60,7 +60,8 @@ export default function AdminCourseCategory() {
       setActionLoading(true);
       try {
         await deleteCategory(id);
-        setCategories(categories.filter((c) => c.id !== id));
+        const refreshed = await getCategories();
+        setCategories(Array.isArray(refreshed) ? refreshed : refreshed.data || []);
         toast.success('Category deleted successfully');
       } catch (error) {
         toast.error('Failed to delete category');
