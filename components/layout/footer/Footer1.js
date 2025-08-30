@@ -7,7 +7,7 @@ export default function Footer1() {
                 <div className="footer__top-wrap">
                     <div className="container">
                         <div className="row">
-                            <div className="col-xl-3 col-lg-4 col-sm-6">
+                            <div className="col-xl-6 col-lg-6 col-sm-6">
                                 <div className="footer-widget">
                                     <div className="footer__about">
                                         <div className="footer__logo logo">
@@ -16,8 +16,8 @@ export default function Footer1() {
                                         <p>when an unknown printer took galley of type and scrambled it to make pspecimen bookt
                                             has.</p>
                                         <ul className="list-wrap m-0 p-0">
-                                            <li className="address">463 7th Ave, NY 10018, USA</li>
-                                            <li className="number">+123 88 9900 456</li>
+                                            <li className="address">Ground floor, 3 Merus Court, Meridian Business Park, Leicester, LE19 1RJ</li>
+                                            <li className="number">+44 7417 473233</li>
                                             <li className="socials">
                                                 <Link href="#"><i className="fab fa-facebook-f" /></Link>
                                                 <Link href="#"><i className="fab fa-twitter" /></Link>
@@ -29,20 +29,20 @@ export default function Footer1() {
                                     </div>
                                 </div>
                             </div>
-                            <div className="col-xl-3 col-lg-4 col-sm-6">
+                            <div className="col-xl-6 col-lg-6 col-sm-6">
                                 <div className="footer-widget widget_nav_menu">
                                     <h4 className="fw-title">Resources</h4>
                                     <ul className="list-wrap">
                                         <li><Link href="/about-us">About</Link></li>
                                         <li><Link href="/contact">Contact</Link></li>
-                                        <li><Link href="/contact">Help Center</Link></li>
+                                        {/* <li><Link href="/contact">Help Center</Link></li>
                                         <li><Link href="#">Refund</Link></li>
                                         <li><Link href="#">Conditions</Link></li>
-                                        <li><Link href="#">Privacy Policy</Link></li>
+                                        <li><Link href="#">Privacy Policy</Link></li> */}
                                     </ul>
                                 </div>
                             </div>
-                            <div className="col-xl-3 col-lg-4 col-sm-6">
+                            {/* <div className="col-xl-3 col-lg-4 col-sm-6">
                                 <div className="footer-widget widget_nav_menu">
                                     <h4 className="fw-title">Courses</h4>
                                     <ul className="list-wrap">
@@ -54,8 +54,8 @@ export default function Footer1() {
                                         <li><Link href="/courses">SEO Optimize</Link></li>
                                     </ul>
                                 </div>
-                            </div>
-                            <div className="col-xl-3 col-lg-4 col-sm-6">
+                            </div> */}
+                            {/* <div className="col-xl-3 col-lg-4 col-sm-6">
                                 <div className="footer-widget">
                                     <h4 className="fw-title">Working Hours</h4>
                                     <div className="footer__working-list">
@@ -73,7 +73,7 @@ export default function Footer1() {
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </div> */}
                         </div>
                     </div>
                 </div>
@@ -82,7 +82,7 @@ export default function Footer1() {
                         <div className="row">
                             <div className="col-lg-8">
                                 <div className="copyright__text">
-                                    <p>Copyright © {new Date().getFullYear()} eduvalt. All rights reserved.</p>
+                                    <p>Copyright © {new Date().getFullYear()} MayPas College. All rights reserved.</p>
                                 </div>
                             </div>
                             <div className="col-lg-4">

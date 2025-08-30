@@ -1,6 +1,30 @@
 import Link from "next/link"
+import { useCallback, useEffect, useRef, useState } from "react"
+import { getCategories } from '../../util/courseCategoryApi';
 
 export default function Categories1() {
+      const [categories, setCategories] = useState([]);
+      const [loading, setLoading] = useState(true);
+      const [fetchError, setFetchError] = useState('');
+    
+  useEffect(() => {
+      setLoading(true);
+      getCategories()
+        .then((data) => {
+          const categoriesArray = Array.isArray(data)
+            ? data
+            : Array.isArray(data?.data)
+            ? data.data
+            : [];
+          setCategories(categoriesArray);
+          setFetchError('');
+        })
+        .catch(() => {
+          setFetchError('Failed to fetch course categories. Please try again later.');
+          setCategories([]);
+        })
+        .finally(() => setLoading(false));
+    }, []);
     return (
         <>
             <section className="categories-area section-py-130">
@@ -23,29 +47,33 @@ export default function Categories1() {
                         </div>
                         <div className="col-xl-7 col-lg-9">
                             <div className="categories__wrap">
+
                                 <img src="/assets/img/objects/categories_shape03.svg" alt="shape" data-aos="fade-right" />
                                 <img src="/assets/img/objects/categories_shape04.svg" alt="shape" data-aos="fade-left" />
-                                <div className="row justify-content-center row-cols-2 row-cols-md-3">
-                                    <div className="col">
-                                        <div className="categories__item">
-                                            <Link href="/courses">
-                                                <i className="flaticon-graphic-design" />
-                                                <span className="name">Graphic Design</span>
-                                                <span className="courses">19 Courses</span>
-                                            </Link>
-                                        </div>
-                                    </div>
-                                    <div className="col">
-                                        <div className="categories__item">
-                                            <Link href="/courses">
-                                                <i className="flaticon-email-marketing" />
-                                                <span className="name">Marketing</span>
-                                                <span className="courses">10 Courses</span>
-                                            </Link>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="row justify-content-center row-cols-2 row-cols-sm-3">
+                               <div className="row justify-content-center row-cols-2 row-cols-md-3">
+  {categories.map((cat, idx) => (
+    <div className="col" key={cat.id}>
+      <div className="categories__item">
+        <Link href={`/courses?category=${cat.id}`}>
+          <img
+            src={
+              cat.featured_image_path
+                ? process.env.NEXT_PUBLIC_API_BASE_URL + '/storage/' + cat.featured_image_path
+                : '/assets/img/objects/categories_shape03.svg'
+            }
+            alt={cat.name}
+            style={{ width: 48, height: 48, objectFit: 'cover', marginBottom: 10 }}
+            className="category-icon"
+          />
+          <span className="name">{cat.name}</span>
+          {/* If you have a course count, use it. Otherwise, remove or set to 0 */}
+          <span className="courses">{cat.courses_count ? `${cat.courses_count} Courses` : ''}</span>
+        </Link>
+      </div>
+    </div>
+  ))}
+</div>
+                                {/* <div className="row justify-content-center row-cols-2 row-cols-sm-3">
                                     <div className="col">
                                         <div className="categories__item">
                                             <Link href="/courses">
@@ -73,7 +101,7 @@ export default function Categories1() {
                                             </Link>
                                         </div>
                                     </div>
-                                </div>
+                                </div> */}
                             </div>
                         </div>
                     </div>

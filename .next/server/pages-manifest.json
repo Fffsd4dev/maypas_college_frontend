@@ -2,7 +2,7 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
-  "/": "pages/index.js",
-  "/courses": "pages/courses.js",
-  "/admin/courses": "pages/admin/courses.js"
+  "/about-us": "pages/about-us.js",
+  "/course/[id]": "pages/course/[id].js",
+  "/courses": "pages/courses.js"
 }

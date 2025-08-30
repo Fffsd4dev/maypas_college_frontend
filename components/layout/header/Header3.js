@@ -1,7 +1,13 @@
 import Link from "next/link"
+import { useRouter } from "next/router"
+        
 import MobileMenu from "../MobileMenu"
 import { Menu } from '@headlessui/react'
 export default function Header3({ scroll, isMobileMenu, handleMobileMenu }) {
+     const router = useRouter();
+
+    // Helper to check if route is active
+    const isActive = (href) => router.pathname === href;
     return (
         <>
             <div id="header-fixed-height" />
@@ -11,8 +17,8 @@ export default function Header3({ scroll, isMobileMenu, handleMobileMenu }) {
                         <div className="row">
                             <div className="col-md-6">
                                 <ul className="tg-header__top-info list-wrap">
-                                    <li><i className="flaticon-pin" /> <span>463 7th Ave, NY 10018, USA</span></li>
-                                    <li><i className="flaticon-email" /> <Link href="mailto:info@gmail.com">info@gmail.com</Link></li>
+                                    <li><i className="flaticon-pin" /> <span>Ground flr, 3 Merus Court, Meridian Business Park, Leicester, LE19 1RJ</span></li>
+                                    <li><i className="flaticon-email" /> <Link href="mailto:info@maypascollege.com"> info@maypascollege.com</Link></li>
                                 </ul>
                             </div>
                             <div className="col-md-6">
@@ -39,7 +45,7 @@ export default function Header3({ scroll, isMobileMenu, handleMobileMenu }) {
                                             <Link href="/"><img src="/assets/img/logo/logo.png" alt="Logo" /></Link>
                                         </div>
                                         <div className="tgmenu__categories d-none d-md-block">
-                                            <Menu as="div" className="dropdown">
+                                            {/* <Menu as="div" className="dropdown">
                                                 <Menu.Button as="button" className="dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
                                                     <svg width={12} height={12} viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                         <path d="M12 12H6.85714V6.85714H12V12ZM5.14286 12H0V6.85714H5.14286V12ZM12 5.14286H6.85714V0H12V5.14286ZM5.14286 5.14286H0V0H5.14286V5.14286Z" fill="currentcolor" />
@@ -53,66 +59,38 @@ export default function Header3({ scroll, isMobileMenu, handleMobileMenu }) {
                                                     <li><Link className="dropdown-item" href="/courses">Marketing</Link></li>
                                                     <li><Link className="dropdown-item" href="/courses">Finance</Link></li>
                                                 </Menu.Items>
-                                            </Menu>
+                                            </Menu> */}
                                         </div>
-                                        <div className="tgmenu__navbar-wrap tgmenu__main-menu d-none d-xl-flex">
-                                            <ul className="navigation">
-                                                <li className="active menu-item-has-children"><Link href="#">Home</Link>
-                                                    <ul className="sub-menu">
-                                                        <li><Link href="/">Home One</Link></li>
-                                                        <li><Link href="/index-2">Home Two</Link></li>
-                                                        <li className="active"><Link href="/index-3">Home Three</Link></li>
-                                                    </ul>
-                                                </li>
-                                                <li className="menu-item-has-children"><Link href="#">Courses</Link>
-                                                    <ul className="sub-menu">
-                                                        <li><Link href="/courses">All Courses</Link></li>
-                                                        <li><Link href="/course-details">Course Details</Link></li>
-                                                    </ul>
-                                                </li>
-                                                <li className="menu-item-has-children"><Link href="#">Pages</Link>
-                                                    <ul className="sub-menu">
-                                                        <li><Link href="/about-us">About Us</Link></li>
-                                                        <li><Link href="/instructors">Our Instructors</Link></li>
-                                                        <li><Link href="/instructor-details">Instructor Details</Link></li>
-                                                        <li><Link href="/mentors">Our Mentors</Link></li>
-                                                        <li><Link href="/events">Our Events</Link></li>
-                                                        <li><Link href="/events-details">Event Details</Link></li>
-                                                        <li><Link href="/faq">Asked Question</Link></li>
-                                                        <li><Link href="/404">404 Page</Link></li>
-                                                        <li><Link href="/contact">contact</Link></li>
-                                                    </ul>
-                                                </li>
-                                                <li className="menu-item-has-children"><Link href="#">Shop</Link>
-                                                    <ul className="sub-menu">
-                                                        <li><Link href="/shop">Shop Page</Link></li>
-                                                        <li><Link href="/shop-details">Shop Details</Link></li>
-                                                    </ul>
-                                                </li>
-                                                <li className="menu-item-has-children"><Link href="#">Blog</Link>
-                                                    <ul className="sub-menu">
-                                                        <li><Link href="/blog-grid">Blog Grid</Link></li>
-                                                        <li><Link href="/blog">Blog Standard</Link></li>
-                                                        <li><Link href="/blog-details">Blog Details</Link></li>
-                                                    </ul>
-                                                </li>
-                                            </ul>
-                                        </div>
+                                          <div className="tgmenu__navbar-wrap tgmenu__main-menu d-none d-xl-flex">
+                <ul className="navigation">
+                    <li className={isActive("/") ? "active sub-menu" : "sub-menu"}>
+                        <Link href="/">Home</Link>
+                    </li>
+                    <li className={isActive("/courses") ? "active" : ""}>
+                        <Link href="/courses">Courses</Link>
+                    </li>
+                    <li className={isActive("/about-us") ? "active sub-menu" : "sub-menu"}>
+                        <Link href="/about-us">About Us</Link>
+                    </li>
+                    <li className={isActive("/blog") ? "active sub-menu" : "sub-menu"}>
+                        <Link href="/blog">Blog</Link>
+                    </li>
+                    <li className={isActive("/faq") ? "active sub-menu" : "sub-menu"}>
+                        <Link href="/faq">FAQs</Link>
+                    </li>
+                </ul>
+            </div>
                                         <div className="tgmenu__search-bar">
-                                            <form action="#">
+                                            {/* <form action="#">
                                                 <input type="text" placeholder="Search For Course . . ." />
                                                 <button type="submit"><i className="flaticon-searching" /></button>
-                                            </form>
+                                            </form> */}
                                         </div>
                                         <div className="tgmenu__action">
                                             <ul className="list-wrap">
-                                                <li className="mini-cart-icon">
-                                                    <Link href="/shop" className="cart-count">
-                                                        <img src="/assets/img/icons/cart.svg" alt="cart" />
-                                                        <span className="mini-cart-count">0</span>
-                                                    </Link>
+                                                <li className="header-btn login-btn"><Link href="https://maypas.classportal.online/customer/account/login" className="btn">Log in</Link>
                                                 </li>
-                                                <li className="header-btn"><Link href="/contact" className="btn">Sign Up</Link></li>
+                                                <li className="header-btn"><Link href="/contact" className="btn">Contact Us</Link></li>
                                             </ul>
                                         </div>
                                     </nav>

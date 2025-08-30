@@ -1,10 +1,4 @@
 {
-  "components\\sections\\Course1.js -> ../elements/PortfolioFilter1": {
-    "id": "components\\sections\\Course1.js -> ../elements/PortfolioFilter1",
-    "files": [
-      "static/chunks/_pages-dir-browser_components_elements_PortfolioFilter1_js.js"
-    ]
-  },
   "node_modules\\next\\dist\\client\\index.js -> ../pages/_app": {
     "id": "node_modules\\next\\dist\\client\\index.js -> ../pages/_app",
     "files": [

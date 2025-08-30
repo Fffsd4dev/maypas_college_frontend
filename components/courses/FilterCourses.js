@@ -1,46 +1,41 @@
-import CategoryLevel from "../filter/Categories"
-import DifficultyFilter from "../filter/DifficultyFilter"
-import Instructor from "../filter/Instructor"
-import LanguageFilter from "../filter/LanguageFilter"
-import PriceFilter from "../filter/PriceFilter"
+import { useEffect, useState } from "react";
+import { getCategories } from "@/util/courseCategoryApi";
+import { useDispatch, useSelector } from "react-redux";
+import { addCategory } from "../../features/courseFilterSlice";
 
-const FilterCourses = () => {
+export default function FilterCourses() {
+    const [categories, setCategories] = useState([]);
+    const dispatch = useDispatch();
+    const selectedCategories = useSelector((state) => state.courseFilter.courseList.category);
+
+    useEffect(() => {
+        getCategories().then((data) => {
+            const arr = Array.isArray(data) ? data : data.data || [];
+            setCategories(arr);
+        });
+    }, []);
+
+    const handleCategoryChange = (id) => {
+        dispatch(addCategory(id));
+    };
+
     return (
-        <>
-            <aside className="courses__sidebar">
-                <div className="shop-widget">
-                    <h4 className="widget-title">Filter by Category</h4>
-                    <div className="shop-cat-list">
-                        <CategoryLevel />
-                    </div>
-                </div>
-                <div className="shop-widget">
-                    <h4 className="widget-title">Price Type</h4>
-                    <div className="shop-cat-list">
-                        <PriceFilter />
-                    </div>
-                </div>
-                <div className="shop-widget">
-                    <h4 className="widget-title">Instructors</h4>
-                    <div className="shop-cat-list">
-                        <Instructor />
-                    </div>
-                </div>
-                <div className="shop-widget">
-                    <h4 className="widget-title">Languages</h4>
-                    <div className="shop-cat-list">
-                        <LanguageFilter />
-                    </div>
-                </div>
-                <div className="shop-widget">
-                    <h4 className="widget-title">Difficulty Level</h4>
-                    <div className="shop-cat-list">
-                        <DifficultyFilter />
-                    </div>
-                </div>
-            </aside>
-        </>
-    )
+        <div className="filter-categories">
+            <h5>Categories</h5>
+            <ul>
+                {categories.map((cat) => (
+                    <li key={cat.id}>
+                        <label>
+                            <input
+                                type="checkbox"
+                                checked={selectedCategories?.includes(String(cat.id))}
+                                onChange={() => handleCategoryChange(String(cat.id))}
+                            />
+                            {cat.name}
+                        </label>
+                    </li>
+                ))}
+            </ul>
+        </div>
+    );
 }
-
-export default FilterCourses

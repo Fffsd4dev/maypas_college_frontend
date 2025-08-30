@@ -83,15 +83,16 @@ const CourseSingle = () => {
                             <div className="col-xl-9 col-lg-8">
                                 <div className="courses__details-wrapper">
                                     <ul className="nav nav-tabs" id="myTab" role="tablist">
-                                        <li className="nav-item" onClick={() => handleOnClick(1)}>
+                                        {/* <li className="nav-item" onClick={() => handleOnClick(1)}>
                                             <button className={activeIndex === 1 ? "nav-link active" : "nav-link"}>Course Information</button>
-                                        </li>
+                                        </li> */}
                                         <li className="nav-item" onClick={() => handleOnClick(2)}>
-                                            <button className={activeIndex === 2 ? "nav-link active" : "nav-link"}>Reviews</button>
+                                            <button className={activeIndex === 1 ? "nav-link active" : "nav-link"}>Reviews</button>
                                         </li>
                                     </ul>
                                     <div className="tab-content" id="myTabContent">
-                                        <div className={activeIndex === 1 ? "tab-pane active" : "tab-pane"}>
+                                        
+                                        {/* <div className={activeIndex === 1 ? "tab-pane active" : "tab-pane"}>
                                             <div className="courses__details-content">
                                                 <p>This tutorial will help you learn quickly and thoroughly. Lorem ipsum, or lipsum as it is sometimes known, iaws dumm text used in laying out print, graphic or web designs. Lorem ipsum dolor sit amet, consectetuer adipiscingawr elit onec odio. Quisque volutpat mattis eros.</p>
                                                 <p>You’ll be exposed to principles and strategies, but, more importantly, you’ll learn how to actually apply these abstract concepts by coding three different websites for three very different audiences. Lorem ipsum is dummy text used in laying out print, graphic or web designs Lorem ipsum</p>
@@ -230,7 +231,7 @@ const CourseSingle = () => {
                                                             </button>
                                                         </h2>
                                                         <div className={isActive.key == 3 ? "accordion-collapse collapse show" : "accordion-collapse collapse"}>
-                                                            <div className="accordion-body">
+                                                             <div className="accordion-body">
                                                                 <ul className="list-wrap">
                                                                     <li className="course-item">
                                                                         <Link href="#" className="course-item-link">
@@ -266,12 +267,11 @@ const CourseSingle = () => {
                                                                         </Link>
                                                                     </li>
                                                                 </ul>
-                                                            </div>
-                                                        </div>
+                                                            </div>                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div className="courses__details-instructors">
+                                             <div className="courses__details-instructors">
                                                 <h4 className="title">Your Instructors</h4>
                                                 <div className="courses__instructors-list">
                                                     <div className="courses__instructors-item">
@@ -329,12 +329,13 @@ const CourseSingle = () => {
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        </div>
-                                        <div className={activeIndex === 2 ? "tab-pane active" : "tab-pane"}>
+                                            </div> 
+                                        </div> */}
+
+                                        <div className={activeIndex === 1 ? "tab-pane active" : "tab-pane"}>
                                             <div className="courses__details-reviews">
                                                 <h4 className="title">Student Ratings  Reviews</h4>
-                                                <div className="course-rate">
+                                                {/* <div className="course-rate">
                                                     <div className="course-rate__summary">
                                                         <div className="course-rate__summary-value">4.8</div>
                                                         <div className="course-rate__summary-stars">
@@ -405,7 +406,7 @@ const CourseSingle = () => {
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </div>
+                                                </div> */}
                                                 <div id="course-reviews">
                                                     <h4 className="course-review-head">Reviews (01)</h4>
                                                     <ul className="list-wrap">
@@ -414,13 +415,13 @@ const CourseSingle = () => {
                                                                 <img src="/assets/img/blog/comment01.png" alt="img" />
                                                             </div>
                                                             <div className="review-author-info">
-                                                                <div className="review-stars-rated">
+                                                                {/* <div className="review-stars-rated">
                                                                     <i className="fas fa-star" />
                                                                     <i className="fas fa-star" />
                                                                     <i className="fas fa-star" />
                                                                     <i className="fas fa-star" />
                                                                     <i className="fas fa-star" />
-                                                                </div>
+                                                                </div> */}
                                                                 <h5 className="user-name">Admin <span className="date">August 5, 2023</span></h5>
                                                                 <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantiu meature areawtyt totam rem aperiam, eaque ipsa quae ab illo inventore veritatis.</p>
                                                             </div>
@@ -439,14 +440,14 @@ const CourseSingle = () => {
                                                             </div>
                                                         </div>
                                                         <input type="text" placeholder="Review Title" />
-                                                        <div className="course-form-rating">
+                                                        {/* <div className="course-form-rating">
                                                             <span>Select Rating:</span>
                                                             <i className="fas fa-star" />
                                                             <i className="fas fa-star" />
                                                             <i className="fas fa-star" />
                                                             <i className="fas fa-star" />
                                                             <i className="fas fa-star" />
-                                                        </div>
+                                                        </div> */}
                                                         <textarea placeholder="Type Comments" />
                                                         <button className="btn">Submit your Review</button>
                                                     </form>

@@ -97,7 +97,7 @@ export default function PortfolioFilter1() {
                   className="courses__item-tag"
                   style={{ backgroundColor: '#4f8cff' }}
                 >
-                  {categories.find((cat) => cat.id === course.course_category_id)?.name || 'Category'}
+                  {categories.find((cat) => String(cat.id) === String(course.course_category_id))?.name || 'Category'}
                 </Link>
                 <Link href={`/course/${course.id}`} className="shine__animate-link">
                   <img
@@ -123,7 +123,7 @@ export default function PortfolioFilter1() {
                                         {/* <Link href="/instructor-details"><img src="/assets/img/courses/course_author.png" alt="img" /></Link>
                                         <Link href="/instructor-details">David Millar</Link> */}
                                     </div>
-                  <h5 className="price">${course.price}</h5>
+                  <h5 className="price">£{course.price}</h5>
                 </div>
               </div>
             </div>

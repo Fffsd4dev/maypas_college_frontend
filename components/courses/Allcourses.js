@@ -1,5 +1,5 @@
-import { useDispatch, useSelector } from "react-redux"
-import jobs from "../../data/courses.json"
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect, useState } from "react";
 import {
     addPerPage,
     addSort,
@@ -8,36 +8,48 @@ import {
     clearInstructor,
     clearLanguage,
     clearPrice,
-} from "../../features/courseFilterSlice"
+} from "../../features/courseFilterSlice";
 import {
     clearCategoryToggle,
     clearDifficultyToggle,
     clearInstructorToggle,
     clearLanguageToggle,
     clearPriceToggle
-} from "../../features/courseSlice"
-import CourseCard from "./CourseCard"
+} from "../../features/courseSlice";
+import CourseCard from "./CourseCard";
+import { fetchCourses } from "@/util/courseApi";
+import { getCategories } from "@/util/courseCategoryApi";
 
 const Allcourses = () => {
-    const { courseList, courseSort } = useSelector((state) => state.courseFilter)
+    const [courses, setCourses] = useState([]);
+    const [categories, setCategories] = useState([]);
+    const { courseList, courseSort } = useSelector((state) => state.courseFilter);
     const {
         category,
         instructor,
         price,
         language,
         difficulty,
-    } = courseList || {}
+    } = courseList || {};
+    const { sort, perPage } = courseSort;
+    const dispatch = useDispatch();
 
-    const { sort, perPage } = courseSort
-    const dispatch = useDispatch()
+    useEffect(() => {
+        fetchCourses().then((data) => {
+            const arr = Array.isArray(data) ? data : data.data || [];
+            setCourses(arr);
+        });
+        getCategories().then((data) => {
+            const arr = Array.isArray(data) ? data : data.data || [];
+            setCategories(arr);
+        });
+    }, []);
 
-    // category filter
+    // category filter (using backend category id)
     const categoryFilter = (item) =>
         category?.length !== 0
-            ? category?.includes(
-                item?.category?.split(" ").join("").toLocaleLowerCase()
-            )
-            : item
+            ? category?.includes(String(item.course_category_id))
+            : item;
 
     // Instructors filter
     const instructorFilter = (item) =>
@@ -45,15 +57,15 @@ const Allcourses = () => {
             ? instructor?.includes(
                 item?.instructor?.split(" ").join("").toLocaleLowerCase()
             )
-            : item
+            : item;
 
     // price filter
     const priceFilter = (item) =>
         price?.length !== 0
             ? price?.includes(
-                item?.price?.split(" ").join("").toLocaleLowerCase()
+                String(item?.price)
             )
-            : item
+            : item;
 
     // language filter
     const languageFilter = (item) =>
@@ -61,7 +73,7 @@ const Allcourses = () => {
             ? language?.includes(
                 item?.language?.split(" ").join("").toLocaleLowerCase()
             )
-            : item
+            : item;
 
     // difficulty filter
     const difficultyFilter = (item) =>
@@ -69,13 +81,15 @@ const Allcourses = () => {
             ? difficulty?.includes(
                 item?.difficulty?.split(" ").join("").toLocaleLowerCase()
             )
-            : item
+            : item;
 
     // sort filter
     const sortFilter = (a, b) =>
-        sort === "des" ? a.id > b.id && -1 : a.id < b.id && -1
+        sort === "des"
+            ? a.id > b.id && -1
+            : a.id < b.id && -1;
 
-    let content = jobs
+    let content = courses
         ?.filter(categoryFilter)
         ?.filter(instructorFilter)
         ?.filter(priceFilter)
@@ -85,39 +99,36 @@ const Allcourses = () => {
         .slice(perPage.start, perPage.end !== 0 ? perPage.end : 12)
         ?.map((item) => (
             <div className="col" key={item.id}>
-
-                <CourseCard item={item} />
+                <CourseCard item={item} categories={categories} />
             </div>
-
-            // End all jobs
-        ))
+        ));
 
     // sort handler
     const sortHandler = (e) => {
-        dispatch(addSort(e.target.value))
-    }
+        dispatch(addSort(e.target.value));
+    };
 
     // per page handler
     const perPageHandler = (e) => {
-        const pageData = JSON.parse(e.target.value)
-        dispatch(addPerPage(pageData))
-    }
+        const pageData = JSON.parse(e.target.value);
+        dispatch(addPerPage(pageData));
+    };
 
     // clear all filters
     const clearAll = () => {
-        dispatch(clearInstructor())
-        dispatch(clearCategory())
-        dispatch(clearPrice())
-        dispatch(clearLanguage())
-        dispatch(clearDifficulty())
-        dispatch(clearInstructorToggle())
-        dispatch(clearCategoryToggle())
-        dispatch(clearPriceToggle())
-        dispatch(clearLanguageToggle())
-        dispatch(clearDifficultyToggle())
-        dispatch(addSort(""))
-        dispatch(addPerPage({ start: 0, end: 0 }))
-    }
+        dispatch(clearInstructor());
+        dispatch(clearCategory());
+        dispatch(clearPrice());
+        dispatch(clearLanguage());
+        dispatch(clearDifficulty());
+        dispatch(clearInstructorToggle());
+        dispatch(clearCategoryToggle());
+        dispatch(clearPriceToggle());
+        dispatch(clearLanguageToggle());
+        dispatch(clearDifficultyToggle());
+        dispatch(addSort(""));
+        dispatch(addPerPage({ start: 0, end: 0 }));
+    };
 
     return (
         <>
@@ -209,9 +220,8 @@ const Allcourses = () => {
             <div className="row courses__grid-wrap row-cols-1 row-cols-xl-3 row-cols-lg-2 row-cols-md-2 row-cols-sm-1">
                 {content}
             </div>
-
         </>
-    )
-}
+    );
+};
 
-export default Allcourses
+export default Allcourses;

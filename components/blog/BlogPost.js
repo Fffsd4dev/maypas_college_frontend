@@ -1,71 +1,45 @@
-import React, { useState, useEffect } from "react"
-import data from "../../util/blog.json"
-import BlogCard1 from "./BlogCard1"
-import BlogCard2 from "./BlogCard2"
-import Pagination from "./Pagination"
+import React, { useState, useEffect } from "react";
+import BlogCard1 from "./BlogCard1";
+import BlogCard2 from "./BlogCard2";
+import Pagination from "./Pagination";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import { fetchBlogs } from "@/util/blogApi";
 
 export default function BlogPost({ style, showItem, showPagination }) {
+    const [blogs, setBlogs] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
-    const limit = showItem;
-
-    const [pagination, setPagination] = useState([]);
-    const [limitPerPage, setLimitPerPage] = useState(limit);
-    const totalPages = Math.ceil(data.length / limitPerPage);
+    const limit = showItem || 3;
+    const router = useRouter();
 
     useEffect(() => {
-        createPagination();
-    }, [limitPerPage, data.length]);
+        fetchBlogs().then((data) => {
+            let arr = Array.isArray(data) ? data : data.data || [];
+            // Sort by updated_time descending
+            arr = arr.sort((a, b) => new Date(b.updated_time) - new Date(a.updated_time));
+            setBlogs(arr);
+        });
+    }, []);
 
-    const createPagination = () => {
-        const pageCount = Math.ceil(data.length / limitPerPage);
-        const paginationArray = new Array(pageCount).fill().map((_, idx) => idx + 1);
-        setPagination(paginationArray);
-    };
+    if (blogs.length === 0) return <h3>No Blogs Found</h3>;
 
-    const startIndex = (currentPage - 1) * limitPerPage;
-    const endIndex = startIndex + limitPerPage;
-    const paginatedProducts = data.slice(startIndex, endIndex);
-
-    const paginationStart = Math.floor((currentPage - 1) / 4) * 4;
-    const paginationEnd = paginationStart + 4;
-    const paginationGroup = pagination.slice(paginationStart, paginationEnd);
-
-    const next = () => {
-        setCurrentPage((page) => page + 1);
-    };
-
-    const prev = () => {
-        setCurrentPage((page) => page - 1);
-    };
-
-    const handlePageChange = (pageNumber) => {
-        setCurrentPage(pageNumber);
-    };
-
-    const handleActive = (item) => {
-        setCurrentPage(item);
-    };
+    // Only limit to 3 if not on /blog page
+    const isBlogPage = router.pathname === "/blog";
+    const displayBlogs = isBlogPage ? blogs : blogs.slice(0, 3);
 
     return (
         <>
-            {paginatedProducts.length === 0 && <h3>No Products Found</h3>}
-
-            {paginatedProducts.map(item => (
+            {displayBlogs.map(item => (
                 <React.Fragment key={item.id}>
                     {style !== 2 ? <BlogCard1 item={item} /> : <BlogCard2 item={item} />}
                 </React.Fragment>
             ))}
-
-            {showPagination && (
-                <Pagination
-                    getPaginationGroup={paginationGroup}
-                    currentPage={currentPage}
-                    totalPages={totalPages}
-                    next={next}
-                    prev={prev}
-                    handlePageChange={handlePageChange}
-                    handleActive={handleActive}
-                />
+            {!isBlogPage && blogs.length > 3 && (
+                <div style={{ textAlign: "center", marginTop: "2rem" }}>
+                    <Link href="/blog" className="btn btn-primary">
+                        View More
+                    </Link>
+                </div>
             )}
         </>
     );

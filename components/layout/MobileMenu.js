@@ -1,10 +1,17 @@
 import Link from "next/link"
 import { useState } from "react"
+import { useRouter } from "next/router"
+
 export default function MobileMenu() {
     const [isActive, setIsActive] = useState({
         status: false,
         key: "",
     })
+
+         const router = useRouter();
+
+    // Helper to check if route is active
+    const isActive2 = (href) => router.pathname === href;
 
     const handleToggle = (key) => {
         if (isActive.key === key) {
@@ -22,7 +29,7 @@ export default function MobileMenu() {
     return (
         <>
             <ul className="navigation">
-                <li className="active "><Link href="/">Home</Link>
+                <li className={isActive2("/") ? "active sub-menu" : "sub-menu"}><Link href="/">Home</Link>
                     {/* <ul className="sub-menu" style={{ display: `${isActive.key == 1 ? "block" : "none"}` }}>
                         <li className="active"><Link href="/">Home One</Link></li>
                         <li><Link href="/index-2">Home Two</Link></li>
@@ -30,13 +37,13 @@ export default function MobileMenu() {
                     </ul> */}
                     <div className={isActive.key == 1 ? "dropdown-btn open" : "dropdown-btn"} onClick={() => handleToggle(1)}><span className="plus-line" /></div>
                 </li>
-                <li className="sub-menu"><Link href="/courses">Courses</Link>
+                <li className={isActive2("/courses") ? "active sub-menu" : "sub-menu"}><Link href="/courses">Courses</Link>
                     {/* <ul className="sub-menu" style={{ display: `${isActive.key == 2 ? "block" : "none"}` }}>
                         <li><Link href="/courses">All Courses</Link></li>
                         <li><Link href="/course-details">Course Details</Link></li>
                     </ul> */}
                     <div className={isActive.key == 2 ? "dropdown-btn open" : "dropdown-btn"} onClick={() => handleToggle(2)}><span className="plus-line" /></div></li>
-                <li className="sub-menu"><Link href="/about-us">About Us</Link>
+                <li className={isActive2("/about-us") ? "active sub-menu" : "sub-menu"}><Link href="/about-us">About Us</Link>
                     {/* <ul className="sub-menu" style={{ display: `${isActive.key == 3 ? "block" : "none"}` }}>
                         <li><Link href="/about-us">About Us</Link></li>
                         <li><Link href="/instructors">Our Instructors</Link></li>
@@ -55,17 +62,17 @@ export default function MobileMenu() {
                         <li><Link href="/shop-details">Shop Details</Link></li>
                     </ul>
                     <div className={isActive.key == 4 ? "dropdown-btn open" : "dropdown-btn"} onClick={() => handleToggle(4)}><span className="plus-line" /></div></li> */}
-                <li className="sub-menu"><Link href="/blog-grid">Blog</Link>
+                <li className={isActive2("/blog") ? "active sub-menu" : "sub-menu"}><Link href="/blog-grid">Blog</Link>
                     {/* <ul className="sub-menu" style={{ display: `${isActive.key == 5 ? "block" : "none"}` }}>
                         <li><Link href="/blog-grid">Blog Grid</Link></li>
                         <li><Link href="/blog">Blog Standard</Link></li>
                         <li><Link href="/blog-details">Blog Details</Link></li>
                     </ul> */}
 
-                      <li className="sub-men"><Link href="/faq">Asked Question</Link></li>
+                      <li className={isActive2("/faq") ? "active sub-menu" : "sub-menu"}><Link href="/faq"> Frequently Asked Questions</Link></li>
                     <div className={isActive.key == 5 ? "dropdown-btn open" : "dropdown-btn"} onClick={() => handleToggle(5)}><span className="plus-line" /></div>
                 </li>
             </ul>
-        </>x
+        </>
     )
 }

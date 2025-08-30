@@ -49,13 +49,16 @@ export default function Header1({ scroll, isMobileMenu, handleMobileMenu }) {
                                                         <li><Link href="/shop-details">Shop Details</Link></li>
                                                     </ul>
                                                 </li> */}
-                                                <li className="sub-menu"><Link href="/blog-grid">Blog</Link>
+                                                <li className="sub-menu"><Link href="/blog">Blog</Link>
+                                                
                                                     {/* <ul className="sub-menu">
                                                         <li><Link href="/blog-grid">Blog Grid</Link></li>
                                                         <li><Link href="/blog">Blog Standard</Link></li>
                                                         <li><Link href="/blog-details">Blog Details</Link></li>
                                                     </ul> */}
                                                 </li>
+                                            <li className="sub-menu"><Link href="/faq"> FAQs</Link></li>
+
                                             </ul>
                                         </div>
                                         {/* <div className="tgmenu__search d-none d-md-block">
@@ -87,8 +90,8 @@ export default function Header1({ scroll, isMobileMenu, handleMobileMenu }) {
                                                         <span className="mini-cart-count">0</span>
                                                     </Link>
                                                 </li> */}
-                                                {/* <li className="header-btn login-btn"><Link href="/contact" className="btn">Log in</Link>
-                                                </li> */}
+                                                <li className="header-btn login-btn"><Link href="https://maypas.classportal.online/customer/account/login" className="btn">Log in</Link>
+                                                </li>
                                                 <li className="header-btn free-btn"><Link href="/contact" className="btn">Contact us</Link></li>
                                             </ul>
                                         </div>
@@ -102,10 +105,10 @@ export default function Header1({ scroll, isMobileMenu, handleMobileMenu }) {
                                             <Link href="/"><img src="/assets/img/logo/logo.png" alt="Logo" /></Link>
                                         </div>
                                         <div className="tgmobile__search">
-                                            <form action="#">
+                                            {/* <form action="#">
                                                 <input type="text" placeholder="Search here..." />
                                                 <button><i className="fas fa-search" /></button>
-                                            </form>
+                                            </form> */}
                                         </div>
                                         <div className="tgmobile__menu-outer">
                                             <MobileMenu />
