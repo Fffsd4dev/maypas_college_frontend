@@ -3,22 +3,56 @@ import Layout from "@/components/layout/Layout"
 import Link from "next/link"
 import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
-import courses from "../../data/courses.json"
-import { fetchCourses, createCourse, updateCourse, deleteCourse } from '@/util/courseApi';
-
+import { getCategories } from "@/util/courseCategoryApi"
+import { fetchCourses } from "@/util/courseApi"
 
 const CourseSingle = () => {
     const router = useRouter()
-    const [course, setCourse] = useState({})
+    const [course, setCourse] = useState(null)
+    const [categories, setCategories] = useState([])
+    const [relatedCourses, setRelatedCourses] = useState([])
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState("")
     const id = router.query.id
 
     useEffect(() => {
-        if (!id) <h1>Loading...</h1>
-        else setCourse(courses.find((item) => item.id == id))
-        return () => { }
-    }, [id])
+        if (!id) return;
+        setLoading(true);
+        setError("");
+        fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/course/get/${id}`)
+            .then(res => {
+                if (!res.ok) throw new Error("Failed to fetch course details");
+                return res.json();
+            })
+            .then(data => setCourse(data))
+            .catch(() => setError("Oops, something went wrong. Please try again later."))
+            .finally(() => setLoading(false));
+    }, [id]);
 
-    const [activeIndex, setActiveIndex] = useState(1)
+    useEffect(() => {
+        getCategories()
+            .then(data => {
+                const arr = Array.isArray(data) ? data : data.data || [];
+                setCategories(arr);
+            })
+            .catch(() => {});
+    }, []);
+
+    useEffect(() => {
+        if (!course?.course_category_id) return;
+        fetchCourses().then(data => {
+            const arr = Array.isArray(data) ? data : data.data || [];
+            // Filter out current course and match category, limit to 4
+            const related = arr
+                .filter(c => String(c.course_category_id) === String(course.course_category_id) && String(c.id) !== String(course.id))
+                .slice(0, 4);
+            setRelatedCourses(related);
+        });
+    }, [course]);
+
+    const categoryName = categories.find(cat => String(cat.id) === String(course?.course_category_id))?.name || course?.course_category_id;
+
+       const [activeIndex, setActiveIndex] = useState(1)
     const handleOnClick = (index) => {
         setActiveIndex(index)
     }
@@ -39,45 +73,58 @@ const CourseSingle = () => {
             })
         }
     }
+
     return (
-        <>
-            <Layout headerStyle={3} footerStyle={1}>
-                <section className="courses__breadcrumb-area">
-                    <div className="container">
+        <Layout headerStyle={3} footerStyle={1}>
+            <section className="courses__breadcrumb-area">
+                <div className="container">
+                    {loading ? (
+                        <div style={{ textAlign: "center", margin: "2rem" }}>Loading...</div>
+                    ) : error ? (
+                        <div style={{ textAlign: "center", margin: "2rem", color: "#ff4f4f" }}>{error}</div>
+                    ) : course ? (
                         <div className="row">
                             <div className="col-lg-8">
                                 <div className="courses__breadcrumb-content">
-                                    <Link href="#" className="category">Graphic Design</Link>
-                                    <h3 className="title">{course.courseTitle}</h3>
-                                    <p>Design tutorial will help you learn quickly and thoroughly orem ipsumor lipsum as it is sometime</p>
-                                    <ul className="courses__item-meta list-wrap">
-                                        <li>
-                                            <div className="author">
-                                                <Link href="#"><img src="/assets/img/courses/course_author02.png" alt="img" /></Link>
-                                                <Link href="#">Arian Hok</Link>
-                                            </div>
-                                        </li>
-                                        <li><i className="flaticon-file" /> 19</li>
-                                        <li><i className="flaticon-timer" /> 10h 30m</li>
-                                        <li><i className="flaticon-user-1" /> 18</li>
-                                        <li>
-                                            <div className="rating">
-                                                <i className="fas fa-star" />
-                                                <i className="fas fa-star" />
-                                                <i className="fas fa-star" />
-                                                <i className="fas fa-star" />
-                                                <i className="fas fa-star" />
-                                                <span className="rating-count">(4.8)</span>
-                                            </div>
-                                        </li>
-                                    </ul>
+                                    <span className="category" style={{ fontWeight: 600, color: "#4f8cff" }}>
+                                        {categoryName}
+                                    </span>
+                                    <h3 className="title">{course.title}</h3>
+                                    <p>{course.excerpt}</p>
+                                   <img
+    src={
+        course && course.featured_image_path
+            ? process.env.NEXT_PUBLIC_API_BASE_URL + "/storage/" + course.featured_image_path
+            : "/assets/img/courses/default.png"
+    }
+    alt={course ? course.title : "Course image"}
+    style={{ maxWidth: 300, marginBottom: 20 }}
+/>
+                                    <div>
+                                        <strong>Description:</strong>
+                                        <p>{course.description}</p>
+                                    </div>
+                                    <div>
+                                        <strong>Price:</strong> ${course.price}
+                                    </div>
+                                    <div>
+                                        {/* <strong>Created At:</strong> {course.created_at} */}
+                                    </div>
+                                    <div>
+                                        {/* <strong>Updated At:</strong> {course.updated_at} */}
+                                    </div>
                                 </div>
                             </div>
+                            <div className="col-xl-3 col-lg-4">
+                               
+                            </div>
                         </div>
-                    </div>
-                </section>
-
-                <section className="courses-details-area section-pb-120">
+                    ) : (
+                        <div style={{ textAlign: "center", margin: "2rem" }}>Course not found.</div>
+                    )}
+                </div>
+            </section>
+            <section className="courses-details-area section-pb-120">
                     <div className="container">
                         <div className="row">
                             <div className="col-xl-9 col-lg-8">
@@ -458,90 +505,71 @@ const CourseSingle = () => {
                                 </div>
                             </div>
                             <div className="col-xl-3 col-lg-4">
-                                <aside className="courses__details-sidebar">
-                                    <div className="event-widget">
-                                        <div className="thumb">
-                                            <img src={`/assets/img/courses/${course.logo ? course.logo:"course_thumb02.jpg"}`} alt="img" />
-                                            <VideoPopup />
-                                        </div>
-                                        <div className="event-cost-wrap">
-                                            <h4 className="price"><strong>Costs:</strong>$25.00 <span>$84.99</span></h4>
-                                            <Link href="#" className="btn">Enroll This Now</Link>
-                                            <div className="event-information-wrap">
-                                                <h6 className="title">Include This Course</h6>
-                                                <ul className="list-wrap">
-                                                    <li><i className="flaticon-timer" />Duration <span>5.2 Hours</span></li>
-                                                    <li><i className="flaticon-file" />Estimated Seat <span>250</span></li>
-                                                    <li><i className="flaticon-user-1" />Joined <span>190</span></li>
-                                                    <li><i className="flaticon-bars" />Laguage <span>English</span></li>
-                                                    <li><i className="flaticon-flash" />Category <span>Desing</span></li>
-                                                    <li><i className="flaticon-share" />Share
-                                                        <ul className="list-wrap event-social">
-                                                            <li><Link href="#"><i className="fab fa-facebook-f" /></Link></li>
-                                                            <li><Link href="#"><i className="fab fa-twitter" /></Link></li>
-                                                            <li><Link href="#"><i className="fab fa-instagram" /></Link></li>
-                                                            <li><Link href="#"><i className="fab fa-youtube" /></Link></li>
-                                                        </ul>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="blog-widget">
-                                        <h4 className="widget-title">Related Courses</h4>
-                                        <div className="rc-post-item">
-                                            <div className="rc-post-thumb">
-                                                <Link href="/course-details">
-                                                    <img src="/assets/img/blog/blog_standard01.jpg" alt="img" />
-                                                </Link>
-                                            </div>
-                                            <div className="rc-post-content">
-                                                <h4 className="title"><Link href="/course-details">Nastering Data ndamentals</Link></h4>
-                                                <span className="price">$22.00</span>
-                                            </div>
-                                        </div>
-                                        <div className="rc-post-item">
-                                            <div className="rc-post-thumb">
-                                                <Link href="/course-details">
-                                                    <img src="/assets/img/blog/blog_standard04.jpg" alt="img" />
-                                                </Link>
-                                            </div>
-                                            <div className="rc-post-content">
-                                                <h4 className="title"><Link href="/course-details">Make Edition Magnificent</Link></h4>
-                                                <span className="price"><del>$29.00</del> $18.00</span>
-                                            </div>
-                                        </div>
-                                        <div className="rc-post-item">
-                                            <div className="rc-post-thumb">
-                                                <Link href="/course-details">
-                                                    <img src="/assets/img/blog/blog_standard03.jpg" alt="img" />
-                                                </Link>
-                                            </div>
-                                            <div className="rc-post-content">
-                                                <h4 className="title"><Link href="/course-details">The Potentially Accessibility</Link></h4>
-                                                <span className="price">$11.00</span>
-                                            </div>
-                                        </div>
-                                        <div className="rc-post-item">
-                                            <div className="rc-post-thumb">
-                                                <Link href="/course-details">
-                                                    <img src="/assets/img/blog/blog_standard02.jpg" alt="img" />
-                                                </Link>
-                                            </div>
-                                            <div className="rc-post-content">
-                                                <h4 className="title"><Link href="/course-details">Create quick is wire frames</Link></h4>
-                                                <span className="price">$11.00</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </aside>
+<aside className="courses__details-sidebar">
+    <div className="event-widget">
+        <div className="thumb">
+           <img
+    src={
+        course && course.featured_image_path
+            ? process.env.NEXT_PUBLIC_API_BASE_URL + "/storage/" + course.featured_image_path
+            : "/assets/img/courses/default.png"
+    }
+    alt={course ? course.title : "Course image"}
+    style={{ maxWidth: 300, marginBottom: 20 }}
+/>
+            {/* <VideoPopup /> */}
+        </div>
+       <div className="event-cost-wrap">
+    <h4 className="price">
+        <strong>Costs:</strong> ${course && course.price ? course.price : "N/A"}
+    </h4>
+    <Link href={course ? `/enroll?course=${course.id}` : "#"} className="btn" aria-disabled={!course}>
+        Enroll This Now
+    </Link>
+    <div className="event-information-wrap">
+        <h6 className="title">Course Info</h6>
+        <ul className="list-wrap">
+            <li><i className="flaticon-bars" />Category <span>{categoryName}</span></li>
+            <li><i className="flaticon-user-1" />Course ID <span>{course ? course.id : "N/A"}</span></li>
+            {/* <li><i className="flaticon-calendar-date" />Created <span>{course ? course.created_at : "N/A"}</span></li> */}
+            {/* <li><i className="flaticon-calendar-date" />Updated <span>{course ? course.updated_at : "N/A"}</span></li> */}
+        </ul>
+    </div>
+</div>
+    </div>
+    <div className="blog-widget">
+        <h4 className="widget-title">Related Courses</h4>
+        {relatedCourses.length === 0 ? (
+            <div>No related courses found.</div>
+        ) : (
+            relatedCourses.map(rc => (
+                <div className="rc-post-item" key={rc.id}>
+                    <div className="rc-post-thumb">
+                        <Link href={`/course/${rc.id}`}>
+                            <img
+                                src={
+                                    rc.featured_image_path
+                                        ? process.env.NEXT_PUBLIC_API_BASE_URL + "/storage/" + rc.featured_image_path
+                                        : "/assets/img/courses/default.png"
+                                }
+                                alt={rc.title}
+                            />
+                        </Link>
+                    </div>
+                    <div className="rc-post-content">
+                        <h4 className="title"><Link href={`/course/${rc.id}`}>{rc.title}</Link></h4>
+                        <span className="price">${rc.price}</span>
+                    </div>
+                </div>
+            ))
+        )}
+    </div>
+</aside>
                             </div>
                         </div>
                     </div>
                 </section>
-
-            </Layout>
-        </>
+        </Layout>
     )
 }
 

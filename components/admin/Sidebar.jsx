@@ -2,6 +2,8 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { FaBook, FaListAlt, FaUser, FaBlog, FaSignOutAlt, FaBars } from 'react-icons/fa';
 import { useState } from 'react';
+import AdminProtectedRoute from '@/components/admin/AdminProtectedRoute';
+
 
 export default function Sidebar() {
   const router = useRouter();
@@ -9,6 +11,7 @@ export default function Sidebar() {
 
   const handleLogout = () => {
     sessionStorage.removeItem('admin_token');
+    localStorage.removeItem('admin_token');
     router.push('/admin/login');
   };
 
@@ -16,6 +19,7 @@ export default function Sidebar() {
   const isActive = (href) => router.pathname === href;
 
   return (
+    <AdminProtectedRoute>
     <aside className={`admin-sidebar${open ? '' : ' collapsed'}`}>
       <div className="sidebar-header">
         <button className="hamburger" onClick={() => setOpen(!open)}>
@@ -155,5 +159,6 @@ export default function Sidebar() {
         }
       `}</style>
     </aside>
+</AdminProtectedRoute>
   );
 }

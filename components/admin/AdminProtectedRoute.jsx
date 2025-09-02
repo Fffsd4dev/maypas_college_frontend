@@ -6,7 +6,7 @@ export default function AdminProtectedRoute({ children }) {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const token = localStorage.getItem('admin_token');
+      const token = sessionStorage.getItem('admin_token');
       if (!token) {
         router.replace('/admin/login');
       }

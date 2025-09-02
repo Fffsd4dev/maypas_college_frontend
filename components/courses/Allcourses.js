@@ -23,6 +23,8 @@ import { getCategories } from "@/util/courseCategoryApi";
 const Allcourses = () => {
     const [courses, setCourses] = useState([]);
     const [categories, setCategories] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
     const { courseList, courseSort } = useSelector((state) => state.courseFilter);
     const {
         category,
@@ -35,14 +37,22 @@ const Allcourses = () => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        fetchCourses().then((data) => {
-            const arr = Array.isArray(data) ? data : data.data || [];
-            setCourses(arr);
-        });
-        getCategories().then((data) => {
-            const arr = Array.isArray(data) ? data : data.data || [];
-            setCategories(arr);
-        });
+        setLoading(true);
+        setError("");
+        Promise.all([
+            fetchCourses().then((data) => Array.isArray(data) ? data : data.data || []),
+            getCategories().then((data) => Array.isArray(data) ? data : data.data || [])
+        ])
+        .then(([coursesArr, categoriesArr]) => {
+            setCourses(coursesArr);
+            setCategories(categoriesArr);
+        })
+        .catch(() => {
+            setError("Oops, something went wrong. Please try again later.");
+            setCourses([]);
+            setCategories([]);
+        })
+        .finally(() => setLoading(false));
     }, []);
 
     // category filter (using backend category id)
@@ -136,7 +146,13 @@ const Allcourses = () => {
                 <div className="row align-items-center">
                     <div className="col-md-6">
                         <div className="shop-top-left">
-                            <p>We found {content?.length} courses for you</p>
+                            {loading ? (
+                                <p>Loading courses...</p>
+                            ) : error ? (
+                                <p style={{ color: "#ff4f4f" }}>{error}</p>
+                            ) : (
+                                <p>We found {content?.length} courses for you</p>
+                            )}
                         </div>
                     </div>
                     <div className="col-md-6">
@@ -218,7 +234,7 @@ const Allcourses = () => {
             </div>
 
             <div className="row courses__grid-wrap row-cols-1 row-cols-xl-3 row-cols-lg-2 row-cols-md-2 row-cols-sm-1">
-                {content}
+                {loading || error ? null : content}
             </div>
         </>
     );
