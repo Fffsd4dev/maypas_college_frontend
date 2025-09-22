@@ -13,9 +13,12 @@ export default function BlogForm({ initial, onSubmit, onCancel, loading }) {
     if (initial) setForm(initial);
   }, [initial]);
 
-  const [errors, setErrors] = useState({});
-  const [preview, setPreview] = useState(initial?.featured_image_path || '');
-  const fileRef = useRef();
+const [errors, setErrors] = useState({});
+const [preview, setPreview] = useState(initial?.student_photo ? (
+    initial.featured_image_path.startsWith('http')
+      ? initial.featured_image_path
+      : process.env.NEXT_PUBLIC_API_BASE_URL + "/storage/" + initial.student_photo
+  ) : '');  const fileRef = useRef();
 
   const validate = () => {
     const errs = {};

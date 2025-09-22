@@ -21,7 +21,7 @@ export default function BlogTable({ blogs, onEdit, onDelete }) {
             <tr key={blog.id}>
               <td>
                 {blog.featured_image_path ? (
-                  <img src={process.env.NEXT_PUBLIC_API_BASE_URL + "/" + blog.featured_image_path} alt="" style={{ width: 60, borderRadius: 6 }} />
+                  <img src={process.env.NEXT_PUBLIC_API_BASE_URL + "/storage/" + blog.featured_image_path} alt="" style={{ width: 60, borderRadius: 6 }} />
                 ) : (
                   <span style={{ color: '#aaa' }}>No image</span>
                 )}

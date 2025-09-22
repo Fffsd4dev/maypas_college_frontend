@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { FaBook, FaListAlt, FaUser, FaBlog, FaSignOutAlt, FaBars } from 'react-icons/fa';
+import { FaBook, FaListAlt, FaUser, FaBlog, FaSignOutAlt, FaBars, FaQuestion, FaSpeakerDeck, FaTeamspeak } from 'react-icons/fa';
 import { useState } from 'react';
 import AdminProtectedRoute from '@/components/admin/AdminProtectedRoute';
 
@@ -54,6 +54,20 @@ export default function Sidebar() {
             <Link href="/admin/blogs" legacyBehavior>
               <a className={isActive('/admin/blogs') ? 'active' : ''}>
                 <FaBlog className="icon" /> <span className="nav-text">Blogs</span>
+              </a>
+            </Link>
+          </li>
+          <li>
+            <Link href="/admin/faqs" legacyBehavior>
+              <a className={isActive('/admin/faqs') ? 'active' : ''}>
+                 <FaQuestion className="icon" /> <span className="nav-text">FAQs</span>
+              </a>
+            </Link>
+          </li>
+           <li>
+            <Link href="/admin/testimonials" legacyBehavior>
+              <a className={isActive('/admin/testimonials') ? 'active' : ''}>
+                 <FaTeamspeak className="icon" /> <span className="nav-text">Testimonials</span>
               </a>
             </Link>
           </li>
