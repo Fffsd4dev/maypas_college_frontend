@@ -1,179 +1,273 @@
-import VideoPopup from "@/components/elements/VidepPopup";
 import Layout from "@/components/layout/Layout";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import Select from "react-select";
+import countriesData from "./countries.json";
 import { getCategories } from "@/util/courseCategoryApi";
 import { fetchCourses } from "@/util/courseApi";
+import { loadStripe } from "@stripe/stripe-js";
+import { Elements, CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
+import { toast } from "react-toastify";
 
-const countryList = [
-  "United Kingdom",
-  "United States",
-  "Canada",
-  "Australia",
-  "Nigeria",
-  "India",
-  "Ghana",
-  "South Africa",
-  "Kenya",
-  "Germany",
-  "France",
-  "Italy",
-  "Spain",
-  "China",
-  "Japan",
-  "Brazil",
-  "Other",
-];
 
-const CourseSingle = () => {
-  const router = useRouter();
-  const [course, setCourse] = useState(null);
-  const [categories, setCategories] = useState([]);
-  const [relatedCourses, setRelatedCourses] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-  const [showEnroll, setShowEnroll] = useState(false);
-  const id = router.query.id;
 
-  useEffect(() => {
-    if (!id) return;
+function ThankYouPopup({ onClose }) {
+  return (
+    <div className="thankyou-popup-overlay" onClick={onClose}>
+      <div className="thankyou-popup-content" onClick={e => e.stopPropagation()}>
+        <h2>Thank You!</h2>
+        <p>Your payment was successful. You are now enrolled in the course.</p>
+        <button className="btn" onClick={onClose}>Close</button>
+      </div>
+      <style jsx>{`
+        .thankyou-popup-overlay {
+          position: fixed;
+          top: 0; left: 0; right: 0; bottom: 0;
+          background: rgba(0,0,0,0.45);
+          z-index: 99999;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .thankyou-popup-content {
+          background: #fff;
+          border-radius: 12px;
+          box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+          padding: 2rem;
+          max-width: 420px;
+          margin: 2rem auto;
+          text-align: center;
+        }
+      `}</style>
+    </div>
+  );
+}
+
+// Stripe public key (replace with your actual key)
+const stripePromise = loadStripe(`${process.env.NEXT_PUBLIC_API_STRIPE_PUBLIC_KEY}`);
+
+
+
+// Stripe payment form component with spinner
+function StripePaymentForm({ personal, course, setEnrollError, resetEnrollForm, showThankYou, setShowThankYou }) {
+  const stripe = useStripe();
+  const elements = useElements();
+  const [loading, setLoading] = useState(false);
+
+  const handleStripePayment = async (e) => {
+    e.preventDefault();
+    setEnrollError("");
     setLoading(true);
-    setError("");
-    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/course/get/${id}`)
-      .then((res) => {
-        if (!res.ok) throw new Error("Failed to fetch course details");
-        return res.json();
-      })
-      .then((data) => setCourse(data))
-      .catch(() =>
-        setError("Oops, something went wrong. Please try again later.")
-      )
-      .finally(() => setLoading(false));
-  }, [id]);
+    if (!stripe || !elements) {
+      setEnrollError("Stripe is not loaded yet.");
+      setLoading(false);
+      return;
+    }
+    try {
+      // 1. Create payment intent on your backend
+     const createRes = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/stripe/payment/intent/create`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: personal.email,
+          firstName: personal.firstName,
+          lastName: personal.lastName,
+          phone: personal.phone,
+          country: personal.country,
+          country_code: personal.country_code,
+          fee: String(course.price),
+          currency: "gbp",
+          off_session: false,
+          confirm: false,
+          course_id: String(course.id),
+          description: `${course.title} Fee`,
+          receipt_email: personal.email,
+          metadata_student_name: `${personal.firstName} ${personal.lastName}`,
+        }),
+      });
 
-  useEffect(() => {
-    getCategories()
-      .then((data) => {
-        const arr = Array.isArray(data) ? data : data.data || [];
-        setCategories(arr);
-      })
-      .catch(() => {});
-  }, []);
+      const createData = await createRes.json();
+      if (!createRes.ok || !createData?.secretKey) throw new Error(createData.message || "Failed to create payment");
 
-  useEffect(() => {
-    if (!course?.course_category_id) return;
-    fetchCourses().then((data) => {
-      const arr = Array.isArray(data) ? data : data.data || [];
-      // Filter out current course and match category, limit to 4
-      const related = arr
-        .filter(
-          (c) =>
-            String(c.course_category_id) ===
-              String(course.course_category_id) &&
-            String(c.id) !== String(course.id)
-        )
-        .slice(0, 4);
-      setRelatedCourses(related);
-    });
-  }, [course]);
+      // 2. Confirm card payment with Stripe.js
+      const cardElement = elements.getElement(CardElement);
 
-  const categoryName =
-    categories.find(
-      (cat) => String(cat.id) === String(course?.course_category_id)
-    )?.name || course?.course_category_id;
-  const [activeIndex, setActiveIndex] = useState(1);
-  const handleOnClick = (index) => {
-    setActiveIndex(index);
+      console.log("Got here");
+
+      const result = await stripe.confirmCardPayment(createData.secretKey, {
+        payment_method: {
+          card: cardElement,
+          billing_details: {
+            name: `${personal.firstName} ${personal.lastName}`,
+            email: personal.email,
+          },
+        },
+      });
+
+      if (result.error) throw new Error(result.error.message);
+
+      console.log(result);
+
+      if (result.paymentIntent.status === "succeeded") {
+        // 3. Confirm payment on your backend (optional, if needed)
+        await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/stripe/payment/intent/confirm`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email: personal.email,
+            firstName: personal.firstName,
+            lastName: personal.lastName,
+            phone: personal.phone,
+            country_code: personal.country_code,
+            fee: String(course.price),
+            currency: "gbp",
+            off_session: false,
+            payment_intent_id: result.paymentIntent.id,
+            confirm: true,
+            course_id: String(course.id),
+            description: `${course.title} Fee`,
+            receipt_email: personal.email,
+            metadata_student_name: `${personal.firstName} ${personal.lastName}`,
+          }),
+        });
+        toast.success("Stripe payment successful!");
+        resetEnrollForm();
+        setShowThankYou(true); // Show thank you popup
+      }
+    } catch (err) {
+      setEnrollError(err.message || "Stripe payment failed.");
+    } finally {
+      setLoading(false);
+    }
   };
-  const [isActive, setIsActive] = useState({
-    status: false,
-    key: 1,
-  });
 
-  // Enrollment Flow State
-  const [step, setStep] = useState(1);
-  const [entryReq, setEntryReq] = useState({
-    age: false,
-    qualification: false,
-  });
-  const [personal, setPersonal] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    phone: "",
-    country: "",
-  });
-  const [countrySearch, setCountrySearch] = useState("");
-  const [paymentMethod, setPaymentMethod] = useState("");
-  const [stripeCard, setStripeCard] = useState("");
-  const [enrollError, setEnrollError] = useState("");
+  return (
+    <form onSubmit={handleStripePayment}>
+      <div style={{ marginBottom: 16 }}>
+        <CardElement options={{ style: { base: { fontSize: "16px" } } }} />
+      </div>
+      <button className="btn" type="submit" style={{ marginTop: 8 }} disabled={loading}>
+        {loading ? (
+          <span>
+            <span className="spinner" style={{
+              display: "inline-block",
+              width: 18,
+              height: 18,
+              border: "2px solid #fff",
+              borderTop: "2px solid #4f8cff",
+              borderRadius: "50%",
+              animation: "spin 0.8s linear infinite",
+              marginRight: 8,
+              verticalAlign: "middle"
+            }} />
+            Processing...
+          </span>
+        ) : "Pay with Stripe"}
+      </button>
+      <style jsx>{`
+        @keyframes spin {
+          0% { transform: rotate(0deg);}
+          100% { transform: rotate(360deg);}
+        }
+      `}</style>
+    </form>
+  );
+}
 
-  const filteredCountries = countryList.filter((c) =>
-    c.toLowerCase().includes(countrySearch.toLowerCase())
+// Dynamic EnrollFlow as a separate component
+function EnrollFlow({
+  step,
+  setStep,
+  entryReq,
+  setEntryReq,
+  personal,
+  setPersonal,
+  paymentMethod,
+  setPaymentMethod,
+  stripeCard,
+  setStripeCard,
+  enrollError,
+  setEnrollError,
+  countryOptions,
+  course,
+  categoryName,
+  resetEnrollForm,
+   showThankYou,
+  setShowThankYou,
+}) {
+  // Country select using react-select and countries.json
+  const CountrySelect = ({ countryOptions, personal, setPersonal }) => (
+    <Select
+      options={countryOptions}
+      value={countryOptions.find(opt => opt.value === personal.country_code) || null}
+      onChange={selected =>
+        setPersonal({
+          ...personal,
+          country: selected ? selected.label : "",
+          country_code: selected ? selected.value : ""
+        })
+      }
+      placeholder="Select or type a country..."
+      isSearchable
+    />
   );
 
-  const handleNext = () => {
-    setEnrollError("");
-    if (step === 2 && (!entryReq.age || !entryReq.qualification)) {
-      setEnrollError("Please confirm both entry requirements.");
-      return;
+  // PayPal Payment Flow
+  const handlePaypalPayment = async () => {
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/paypal/payment/intent/create`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: personal.email,
+          firstName: personal.firstName,
+          lastName: personal.lastName,
+          phone: personal.phone,
+          country: personal.country,
+          country_code: personal.country_code,
+          fee: String(course.price),
+          currency: "gbp",
+          description: `${course.title} Fee`,
+          receipt_email: personal.email,
+          metadata_student_name: `${personal.firstName} ${personal.lastName}`,
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Failed to initiate PayPal");
+
+      if (data?.approval_url) {
+        window.location.href = data.approval_url;
+      } else {
+        alert("PayPal payment successful!");
+        resetEnrollForm();
+      }
+    } catch (err) {
+      console.error(err);
+      setEnrollError(err.message || "PayPal payment failed.");
     }
-    if (
-      step === 3 &&
-      (!personal.firstName ||
-        !personal.lastName ||
-        !personal.email ||
-        !personal.phone ||
-        !personal.country)
-    ) {
-      setEnrollError("Please fill all personal details.");
-      return;
-    }
-    if (step === 4 && !paymentMethod) {
-      setEnrollError("Please select a payment method.");
-      return;
-    }
-    setStep(step + 1);
   };
 
-  const handlePrev = () => setStep(step - 1);
-
-  // Enrollment Modal/Section
-  const EnrollFlow = () => (
+  return (
     <div className="enroll-modal">
       <div className="enroll-steps">
-        <div
-          className="enroll-step"
-          style={{ display: step === 1 ? "block" : "none" }}
-        >
+        <div className="enroll-step" style={{ display: step === 1 ? "block" : "none" }}>
           <h4>Course Information</h4>
-          <p>
-            <strong>Course:</strong> {course.title}
-          </p>
-          <p>
-            <strong>Category:</strong> {categoryName}
-          </p>
-          <p>
-            <strong>Price:</strong> ${course.price}
-          </p>
-          <button className="btn" onClick={handleNext}>
-            Next
-          </button>
+          <p><strong>Course:</strong> {course.title}</p>
+          {/* <p><strong>Course:</strong> {course.id}</p> */}
+          <p><strong>Category:</strong> {categoryName}</p>
+          <p><strong>Price:</strong> ${course.price}</p>
+          <button className="btn" onClick={() => setStep(2)}>Next</button>
         </div>
-        <div
-          className="enroll-step"
-          style={{ display: step === 2 ? "block" : "none" }}
-        >
+        <div className="enroll-step" style={{ display: step === 2 ? "block" : "none" }}>
           <h4>Entry Requirements</h4>
           <div>
             <label>
               <input
                 type="checkbox"
                 checked={entryReq.age}
-                onChange={(e) =>
-                  setEntryReq({ ...entryReq, age: e.target.checked })
-                }
+                onChange={e => setEntryReq({ ...entryReq, age: e.target.checked })}
               />{" "}
               I confirm that I am 16 years or older.
             </label>
@@ -183,37 +277,30 @@ const CourseSingle = () => {
               <input
                 type="checkbox"
                 checked={entryReq.qualification}
-                onChange={(e) =>
-                  setEntryReq({ ...entryReq, qualification: e.target.checked })
-                }
+                onChange={e => setEntryReq({ ...entryReq, qualification: e.target.checked })}
               />{" "}
-              I confirm that I have a high school qualification or its
-              equivalent.
+              I confirm that I have a high school qualification or its equivalent.
             </label>
           </div>
-          {enrollError && (
-            <div style={{ color: "red", margin: "10px 0" }}>{enrollError}</div>
-          )}
-          <button className="btn" onClick={handlePrev}>
-            Back
-          </button>{" "}
-          <button className="btn" onClick={handleNext}>
-            Next
-          </button>
+          {enrollError && <div style={{ color: "red", margin: "10px 0" }}>{enrollError}</div>}
+          <button className="btn" onClick={() => setStep(1)}>Back</button>{" "}
+          <button className="btn" onClick={() => {
+            if (!entryReq.age || !entryReq.qualification) {
+              setEnrollError("Please confirm both entry requirements.");
+              return;
+            }
+            setEnrollError("");
+            setStep(3);
+          }}>Next</button>
         </div>
-        <div
-          className="enroll-step"
-          style={{ display: step === 3 ? "block" : "none" }}
-        >
+        <div className="enroll-step" style={{ display: step === 3 ? "block" : "none" }}>
           <h4>Personal Details</h4>
           <div>
             <input
               type="text"
               placeholder="First Name"
               value={personal.firstName}
-              onChange={(e) =>
-                setPersonal({ ...personal, firstName: e.target.value })
-              }
+              onChange={e => setPersonal({ ...personal, firstName: e.target.value })}
             />
           </div>
           <div>
@@ -221,9 +308,7 @@ const CourseSingle = () => {
               type="text"
               placeholder="Last Name"
               value={personal.lastName}
-              onChange={(e) =>
-                setPersonal({ ...personal, lastName: e.target.value })
-              }
+              onChange={e => setPersonal({ ...personal, lastName: e.target.value })}
             />
           </div>
           <div>
@@ -231,9 +316,7 @@ const CourseSingle = () => {
               type="email"
               placeholder="Email Address"
               value={personal.email}
-              onChange={(e) =>
-                setPersonal({ ...personal, email: e.target.value })
-              }
+              onChange={e => setPersonal({ ...personal, email: e.target.value })}
             />
           </div>
           <div>
@@ -241,54 +324,42 @@ const CourseSingle = () => {
               type="text"
               placeholder="Phone Number"
               value={personal.phone}
-              onChange={(e) =>
-                setPersonal({ ...personal, phone: e.target.value })
-              }
+              onChange={e => setPersonal({ ...personal, phone: e.target.value })}
             />
           </div>
           <div>
-            <input
-              type="text"
-              placeholder="Country"
-              value={countrySearch}
-              onChange={(e) => setCountrySearch(e.target.value)}
-              style={{ marginBottom: 5 }}
+            <CountrySelect
+              countryOptions={countryOptions}
+              personal={personal}
+              setPersonal={setPersonal}
             />
-            <select
-              value={personal.country}
-              onChange={(e) =>
-                setPersonal({ ...personal, country: e.target.value })
-              }
-            >
-              <option value="">Select Country</option>
-              {filteredCountries.map((c) => (
-                <option key={c} value={c}>
-                  {c}
-                </option>
-              ))}
-            </select>
           </div>
-          {enrollError && (
-            <div style={{ color: "red", margin: "10px 0" }}>{enrollError}</div>
-          )}
-          <button className="btn" onClick={handlePrev}>
-            Back
-          </button>{" "}
-          <button className="btn" onClick={handleNext}>
-            Next
-          </button>
+          {enrollError && <div style={{ color: "red", margin: "10px 0" }}>{enrollError}</div>}
+          <button className="btn" onClick={() => setStep(2)}>Back</button>{" "}
+          <button className="btn" onClick={() => {
+            if (
+              !personal.firstName ||
+              !personal.lastName ||
+              !personal.email ||
+              !personal.phone ||
+              !personal.country ||
+              !personal.country_code
+            ) {
+              setEnrollError("Please fill all personal details.");
+              return;
+            }
+            setEnrollError("");
+            setStep(4);
+          }}>Next</button>
         </div>
-        <div
-          className="enroll-step"
-          style={{ display: step === 4 ? "block" : "none" }}
-        >
+        <div className="enroll-step" style={{ display: step === 4 ? "block" : "none" }}>
           <h4>Payment Details</h4>
           <div>
             <label>
               Payment Method:{" "}
               <select
                 value={paymentMethod}
-                onChange={(e) => setPaymentMethod(e.target.value)}
+                onChange={e => setPaymentMethod(e.target.value)}
               >
                 <option value="">Select</option>
                 <option value="paypal">PayPal</option>
@@ -299,29 +370,32 @@ const CourseSingle = () => {
           </div>
           {paymentMethod === "paypal" && (
             <div style={{ margin: "15px 0" }}>
-              <button className="btn">Pay with PayPal</button>
+              <button className="btn" onClick={handlePaypalPayment}>
+                Pay with PayPal
+              </button>
             </div>
           )}
           {paymentMethod === "stripe" && (
-            <div style={{ margin: "15px 0" }}>
-              <input
-                type="text"
-                placeholder="Card Number"
-                value={stripeCard}
-                onChange={(e) => setStripeCard(e.target.value)}
+          <div style={{ margin: "15px 0" }}>
+            <Elements stripe={stripePromise}>
+              <StripePaymentForm
+                personal={personal}
+                course={course}
+                setEnrollError={setEnrollError}
+                resetEnrollForm={resetEnrollForm}
+                showThankYou={showThankYou}
+                setShowThankYou={setShowThankYou}
               />
-              <button className="btn">Pay with Stripe</button>
-            </div>
-          )}
+            </Elements>
+          </div>
+        )}
           {paymentMethod === "bank" && (
-            <div
-              style={{
-                margin: "15px 0",
-                background: "#f7f7f7",
-                padding: 15,
-                borderRadius: 8,
-              }}
-            >
+            <div style={{
+              margin: "15px 0",
+              background: "#f7f7f7",
+              padding: 15,
+              borderRadius: 8,
+            }}>
               <strong>Bank Transfer</strong>
               <div>Account Name: Maypas College LTD</div>
               <div>Bank: Barclay’s Bank</div>
@@ -336,18 +410,14 @@ const CourseSingle = () => {
               </div>
             </div>
           )}
-          {enrollError && (
-            <div style={{ color: "red", margin: "10px 0" }}>{enrollError}</div>
-          )}
-          <button className="btn" onClick={handlePrev}>
-            Back
-          </button>
+          {enrollError && <div style={{ color: "red", margin: "10px 0" }}>{enrollError}</div>}
+          <button className="btn" onClick={() => setStep(3)}>Back</button>
         </div>
       </div>
       <button
         className="btn btn-border"
         style={{ marginTop: 20 }}
-        onClick={() => setShowEnroll(false)}
+        onClick={resetEnrollForm}
       >
         Cancel
       </button>
@@ -376,6 +446,86 @@ const CourseSingle = () => {
       `}</style>
     </div>
   );
+}
+
+const CourseSingle = () => {
+  const router = useRouter();
+  const [course, setCourse] = useState(null);
+  const [categories, setCategories] = useState([]);
+  const [relatedCourses, setRelatedCourses] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [showEnroll, setShowEnroll] = useState(false);
+  const id = router.query.id;
+  const [showThankYou, setShowThankYou] = useState(false);
+
+  useEffect(() => {
+    if (!id) return;
+    setLoading(true);
+    setError("");
+    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/course/get/${id}`)
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to fetch course details");
+        return res.json();
+      })
+      .then((data) => setCourse(data))
+      .catch(() => setError("Oops, something went wrong. Please try again later."))
+      .finally(() => setLoading(false));
+  }, [id]);
+
+  useEffect(() => {
+    getCategories()
+      .then((data) => {
+        const arr = Array.isArray(data) ? data : data.data || [];
+        setCategories(arr);
+      })
+      .catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    if (!course?.course_category_id) return;
+    fetchCourses().then((data) => {
+      const arr = Array.isArray(data) ? data : data.data || [];
+      const related = arr
+        .filter(
+          (c) =>
+            String(c.course_category_id) === String(course.course_category_id) &&
+            String(c.id) !== String(course.id)
+        )
+        .slice(0, 4);
+      setRelatedCourses(related);
+    });
+  }, [course]);
+
+  const categoryName =
+    categories.find((cat) => String(cat.id) === String(course?.course_category_id))?.name || course?.course_category_id;
+  const [activeIndex, setActiveIndex] = useState(1);
+  const handleOnClick = (index) => setActiveIndex(index);
+
+  // Enrollment Flow State
+  const [step, setStep] = useState(1);
+  const [entryReq, setEntryReq] = useState({ age: false, qualification: false });
+  const [personal, setPersonal] = useState({ firstName: "", lastName: "", email: "", phone: "", country: "", country_code: "" });
+  const [paymentMethod, setPaymentMethod] = useState("");
+  const [stripeCard, setStripeCard] = useState("");
+  const [enrollError, setEnrollError] = useState("");
+
+  // Prepare country options from countries.json
+  const countryOptions = countriesData.map(c => ({
+    value: String(c.country_code),
+    label: c.country_name
+  }));
+
+  // Reset enroll form and close popup
+  const resetEnrollForm = () => {
+    setStep(1);
+    setEntryReq({ age: false, qualification: false });
+    setPersonal({ firstName: "", lastName: "", email: "", phone: "", country: "", country_code: "" });
+    setPaymentMethod("");
+    setStripeCard("");
+    setEnrollError("");
+    setShowEnroll(false);
+  };
 
   // Dynamic tabs for course_info_key
   const courseInfoTabs =
@@ -392,23 +542,14 @@ const CourseSingle = () => {
       <section className="courses__breadcrumb-area">
         <div className="container">
           {loading ? (
-            <div style={{ textAlign: "center", margin: "2rem" }}>
-              Loading...
-            </div>
+            <div style={{ textAlign: "center", margin: "2rem" }}>Loading...</div>
           ) : error ? (
-            <div
-              style={{ textAlign: "center", margin: "2rem", color: "#ff4f4f" }}
-            >
-              {error}
-            </div>
+            <div style={{ textAlign: "center", margin: "2rem", color: "#ff4f4f" }}>{error}</div>
           ) : course ? (
             <div className="row">
               <div className="col-lg-8">
                 <div className="courses__breadcrumb-content">
-                  <span
-                    className="category"
-                    style={{ fontWeight: 600, color: "#4f8cff" }}
-                  >
+                  <span className="category" style={{ fontWeight: 600, color: "#4f8cff" }}>
                     {categoryName}
                   </span>
                   <h3 className="title">{course.title}</h3>
@@ -435,13 +576,64 @@ const CourseSingle = () => {
               </div>
             </div>
           ) : (
-            <div style={{ textAlign: "center", margin: "2rem" }}>
-              Course not found.
-            </div>
+            <div style={{ textAlign: "center", margin: "2rem" }}>Course not found.</div>
           )}
         </div>
       </section>
-      {showEnroll && <EnrollFlow />}
+      {/* Popup for enroll */}
+      {showEnroll && !showThankYou && (
+        <div className="enroll-popup-overlay" onClick={resetEnrollForm}>
+          <div className="enroll-popup-content" onClick={e => e.stopPropagation()}>
+            <EnrollFlow
+              step={step}
+              setStep={setStep}
+              entryReq={entryReq}
+              setEntryReq={setEntryReq}
+              personal={personal}
+              setPersonal={setPersonal}
+              paymentMethod={paymentMethod}
+              setPaymentMethod={setPaymentMethod}
+              stripeCard={stripeCard}
+              setStripeCard={setStripeCard}
+              enrollError={enrollError}
+              setEnrollError={setEnrollError}
+              countryOptions={countryOptions}
+              course={course}
+              categoryName={categoryName}
+              resetEnrollForm={resetEnrollForm}
+              showThankYou={showThankYou}
+              setShowThankYou={setShowThankYou}
+            />
+          </div>
+          <style jsx>{`
+            .enroll-popup-overlay {
+              position: fixed;
+              top: 0; left: 0; right: 0; bottom: 0;
+              background: rgba(0,0,0,0.45);
+              z-index: 9999;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+            }
+            .enroll-popup-content {
+              max-width: 440px;
+              width: 100%;
+              background: transparent;
+              border-radius: 12px;
+              box-shadow: none;
+              position: relative;
+            }
+          `}</style>
+        </div>
+      )}
+      {showThankYou && (
+        <ThankYouPopup
+          onClose={() => {
+            setShowThankYou(false);
+            setShowEnroll(false);
+          }}
+        />
+      )}
       <section className="courses-details-area section-pb-120">
         <div className="container">
           <div className="row">
@@ -449,84 +641,18 @@ const CourseSingle = () => {
               <div className="courses__details-wrapper">
                 <ul className="nav nav-tabs" id="myTab" role="tablist">
                   <li className="nav-item" onClick={() => handleOnClick(1)}>
-                    <button
-                      className={
-                        activeIndex === 1 ? "nav-link active" : "nav-link"
-                      }
-                    >
-                      Reviews
-                    </button>
+                    <button className={activeIndex === 1 ? "nav-link active" : "nav-link"}>Reviews</button>
                   </li>
-                  {/* Dynamically create a tab for each course_info_key */}
                   {courseInfoTabs.length > 0 &&
                     courseInfoTabs.map((tab) => (
-                      <li
-                        className="nav-item"
-                        key={tab.key}
-                        onClick={() => handleOnClick(tab.key)}
-                      >
-                        <button
-                          className={
-                            activeIndex === tab.key
-                              ? "nav-link active"
-                              : "nav-link"
-                          }
-                        >
+                      <li className="nav-item" key={tab.key} onClick={() => handleOnClick(tab.key)}>
+                        <button className={activeIndex === tab.key ? "nav-link active" : "nav-link"}>
                           {tab.label}
                         </button>
                       </li>
                     ))}
                 </ul>
                 <div className="tab-content" id="myTabContent">
-                  {/* {activeIndex === 1 && (
-                    <div className="tab-pane active">
-                      <div className="courses__details-reviews">
-                        <h4 className="title">Student Ratings Reviews</h4>
-                        <div id="course-reviews">
-                          <h4 className="course-review-head">Reviews (01)</h4>
-                          <ul className="list-wrap">
-                            <li>
-                              <div className="review-author">
-                                <img
-                                  src="/assets/img/blog/comment01.png"
-                                  alt="img"
-                                />
-                              </div>
-                              <div className="review-author-info">
-                                <h5 className="user-name">
-                                  Admin{" "}
-                                  <span className="date">August 5, 2023</span>
-                                </h5>
-                                <p>
-                                  Sed ut perspiciatis unde omnis iste natus
-                                  error sit voluptatem accusantium doloremque
-                                  laudantiu meature areawtyt totam rem aperiam,
-                                  eaque ipsa quae ab illo inventore veritatis.
-                                </p>
-                              </div>
-                            </li>
-                          </ul>
-                        </div>
-                        <div className="course-review-form">
-                          <h4 className="course-review-head">Write a review</h4>
-                          <form action="#">
-                            <div className="row">
-                              <div className="col-sm-6">
-                                <input type="text" placeholder="Your Name" />
-                              </div>
-                              <div className="col-sm-6">
-                                <input type="email" placeholder="Your Email" />
-                              </div>
-                            </div>
-                            <input type="text" placeholder="Review Title" />
-                            <textarea placeholder="Type Comments" />
-                            <button className="btn">Submit your Review</button>
-                          </form>
-                        </div>
-                      </div>
-                    </div>
-                  )} */}
-                  {/* Show each course_info_value in its own tab */}
                   {courseInfoTabs.length > 0 &&
                     courseInfoTabs.map((tab) =>
                       activeIndex === tab.key ? (
@@ -556,8 +682,7 @@ const CourseSingle = () => {
                   </div>
                   <div className="event-cost-wrap">
                     <h4 className="price">
-                      <strong>Costs:</strong> $
-                      {course && course.price ? course.price : "N/A"}
+                      <strong>Costs:</strong> ${course && course.price ? course.price : "N/A"}
                     </h4>
                     <button
                       onClick={() => setShowEnroll(true)}

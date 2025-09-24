@@ -7,7 +7,7 @@ function getToken() {
 
 export async function fetchTestimonials() {
   const token = getToken();
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/testimonial/get/all`, {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/admin/testimonial/get/all`, {
     headers: { Authorization: `Bearer ${token}` }
   });
   if (!res.ok) throw new Error('Failed to fetch testimonials');
