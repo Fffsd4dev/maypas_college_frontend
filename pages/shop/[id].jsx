@@ -98,7 +98,7 @@ const BookSingle = () => {
                                                 <span className="code">#CDP21</span>
                                             </li>
                                             <li className="sd-category">
-                                                <span className="title">Categories:</span>
+                                                <span className="title">Programmes:</span>
                                                 <Link href="#">Business  Marketing</Link>
                                             </li>
                                             <li className="sd-tag">

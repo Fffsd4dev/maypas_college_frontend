@@ -20,7 +20,7 @@ export default function Categories1() {
           setFetchError('');
         })
         .catch(() => {
-          setFetchError('Failed to fetch course categories. Please try again later.');
+          setFetchError('Failed to fetch course programmes. Please try again later.');
           setCategories([]);
         })
         .finally(() => setLoading(false));
@@ -34,14 +34,14 @@ export default function Categories1() {
                             <div className="categories__title-wrap text-center text-xl-start">
                                 <div className="section__title">
                                     <span className="sub-title">Unique online courses</span>
-                                    <h2 className="title tg-svg">Browse By <span className="position-relative"><span className="svg-icon" id="svg-5" data-svg-icon="assets/img/icons/title_shape.svg" />Categories</span>
+                                    <h2 className="title tg-svg">Browse By <span className="position-relative"><span className="svg-icon" id="svg-5" data-svg-icon="assets/img/icons/title_shape.svg" />Programmes</span>
                                     </h2>
                                 </div>
                                 <p>Borem ipsum dolor sit amet, consectetur adipiscing eliawe awut elit ellus, luctus nec
                                     ullamcorper mattisBorem ipsum dolor awes atnse awctetur.</p>
                                 <div className="tg-button-wrap justify-content-center justify-content-xl-start">
                                     <Link href="/courses" className="btn btn-border tg-svg"><span className="text">All
-                                        Categories</span> <span className="svg-icon" id="svg-6" data-svg-icon="assets/img/icons/btn-arrow.svg" /></Link>
+                                        Programmes</span> <span className="svg-icon" id="svg-6" data-svg-icon="assets/img/icons/btn-arrow.svg" /></Link>
                                 </div>
                             </div>
                         </div>

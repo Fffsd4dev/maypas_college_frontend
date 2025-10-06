@@ -21,7 +21,7 @@ export default function FilterCourses() {
 
     return (
         <div className="filter-categories">
-            <h5>Categories</h5>
+            <h5>Programmes</h5>
             <ul>
                 {categories.map((cat) => (
                     <li key={cat.id}>

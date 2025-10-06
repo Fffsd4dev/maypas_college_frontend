@@ -74,8 +74,8 @@ export default function CourseCategoryForm({ initial, onSubmit, onCancel, loadin
         <button type="submit" className="save-btn" disabled={loading}>
           {loading
             ? initial
-              ? 'Updating Course Category...'
-              : 'Creating Course Category...'
+              ? 'Updating Programme...'
+              : 'Creating Programme...'
             : 'Proceed'}
         </button>
         {onCancel && (

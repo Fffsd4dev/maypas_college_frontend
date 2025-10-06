@@ -696,7 +696,7 @@ const CourseSingle = () => {
                       <ul className="list-wrap">
                         <li>
                           <i className="flaticon-bars" />
-                          Category <span>{categoryName}</span>
+                          Programme <span>{categoryName}</span>
                         </li>
                         <li>
                           <i className="flaticon-user-1" />

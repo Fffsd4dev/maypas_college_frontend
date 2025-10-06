@@ -8,8 +8,8 @@ export default function Banner1() {
                     <div className="row">
                         <div className="col-lg-6">
                             <div className="banner__content">
-                                <img src="/assets/img/banner/bshape_01.png" alt="shape" className="shape alltuchtopdown" />
-                                <img src="/assets/img/banner/bshape_02.png" alt="shape" className="shape" />
+                                {/* <img src="/assets/img/banner/bshape_01.png" alt="shape" className="shape alltuchtopdown" />
+                                <img src="/assets/img/banner/bshape_02.png" alt="shape" className="shape" /> */}
                                 <span className="sub-title" >100% Satisfaction
                                     Guarantee</span>
                                 <h3 className="title tg-svg" >Study for a degree or MBA from <span className="position-relative"><span className="svg-icon" id="svg-2" data-svg-icon="assets/img/icons/title_shape.svg" />UK Universities</span>  for less than £5000</h3>

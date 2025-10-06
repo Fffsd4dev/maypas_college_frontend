@@ -20,7 +20,7 @@ export default function Events() {
                                                 </div>
                                                 <div className="form-grp">
                                                     <select className="form-select" aria-label="Default select example">
-                                                        <option>All Categories</option>
+                                                        <option>All Programmes</option>
                                                         <option>Attendance Based</option>
                                                         <option>Unscheduled Events</option>
                                                         <option>Scheduled Events</option>

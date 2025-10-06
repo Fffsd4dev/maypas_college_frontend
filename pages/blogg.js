@@ -22,7 +22,7 @@ export default function Home() {
                                         </div>
                                     </div>
                                     <div className="blog-widget">
-                                        <h4 className="widget-title">Categories</h4>
+                                        <h4 className="widget-title">Programmes</h4>
                                         <div className="shop-cat-list">
                                             <ul className="list-wrap">
                                                 <li>

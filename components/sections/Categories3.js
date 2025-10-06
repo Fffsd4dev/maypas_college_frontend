@@ -10,7 +10,7 @@ export default function Categories3() {
                             <div className="categories__title-wrap text-center text-lg-start m-0">
                                 <div className="section__title mb-0">
                                     <span className="sub-title">Unique online courses</span>
-                                    <h2 className="title tg-svg">Browse By <span className="position-relative"><span className="svg-icon" id="svg-5" data-svg-icon="assets/img/icons/title_shape.svg" />Categories</span>
+                                    <h2 className="title tg-svg">Browse By <span className="position-relative"><span className="svg-icon" id="svg-5" data-svg-icon="assets/img/icons/title_shape.svg" />Programmes</span>
                                     </h2>
                                 </div>
                             </div>
@@ -18,7 +18,7 @@ export default function Categories3() {
                         <div className="col-xl-5 col-lg-4 col-md-6">
                             <div className="tg-button-wrap mt-4 mt-lg-0 justify-content-center justify-content-lg-end">
                                 <Link href="/courses" className="btn btn-border tg-svg"><span className="text">All
-                                    Categories</span> <span className="svg-icon" id="svg-6" data-svg-icon="assets/img/icons/btn-arrow.svg" /></Link>
+                                    Programmes</span> <span className="svg-icon" id="svg-6" data-svg-icon="assets/img/icons/btn-arrow.svg" /></Link>
                             </div>
                         </div>
                     </div>

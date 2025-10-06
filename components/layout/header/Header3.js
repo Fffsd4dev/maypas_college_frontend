@@ -1,10 +1,32 @@
 import Link from "next/link"
+import { useEffect, useState } from "react"
+
 import { useRouter } from "next/router"
         
 import MobileMenu from "../MobileMenu"
+
 import { Menu } from '@headlessui/react'
+import { getCategories } from '@/util/courseCategoryApi';
+
+
 export default function Header3({ scroll, isMobileMenu, handleMobileMenu }) {
      const router = useRouter();
+     const [categories, setCategories] = useState([]);
+    const [catLoading, setCatLoading] = useState(true);
+    useEffect(() => {
+        setCatLoading(true);
+        getCategories()
+            .then((data) => {
+                const categoriesArray = Array.isArray(data)
+                    ? data
+                    : Array.isArray(data?.data)
+                        ? data.data
+                        : [];
+                setCategories(categoriesArray);
+            })
+            .catch(() => setCategories([]))
+            .finally(() => setCatLoading(false));
+    }, []);
 
     // Helper to check if route is active
     const isActive = (href) => router.pathname === href;
@@ -50,7 +72,7 @@ export default function Header3({ scroll, isMobileMenu, handleMobileMenu }) {
                                                     <svg width={12} height={12} viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                         <path d="M12 12H6.85714V6.85714H12V12ZM5.14286 12H0V6.85714H5.14286V12ZM12 5.14286H6.85714V0H12V5.14286ZM5.14286 5.14286H0V0H5.14286V5.14286Z" fill="currentcolor" />
                                                     </svg>
-                                                    Categories
+                                                    Programmes
                                                 </Menu.Button>
                                                 <Menu.Items as="ul" className="dropdown-menu d-block" aria-labelledby="dropdownMenuButton1">
                                                     <li><Link className="dropdown-item" href="/courses">Business</Link></li>
@@ -67,7 +89,23 @@ export default function Header3({ scroll, isMobileMenu, handleMobileMenu }) {
                         <Link href="/">Home</Link>
                     </li>
                     <li className={isActive("/courses") ? "active" : ""}>
-                        <Link href="/courses">Courses</Link>
+                        <Link href="/courses">Programmes</Link>
+                         <ul className="sub-menu">
+                                                        {catLoading ? (
+                                                            <li><span>Loading...</span></li>
+                                                        ) : (
+                                                            categories.length > 0 ? (
+                                                                categories.map(cat => (
+                                                                    <li key={cat.id}>
+                                                                        <Link href={`/courses?category=${cat.id}`}>{cat.name}</Link>
+                                                                    </li>
+                                                                ))
+                                                            ) : (
+                                                                <li><span>No categories found</span></li>
+                                                            )
+                                                        )}
+                                                        <li><Link href="/courses">All Courses</Link></li>
+                                                    </ul>
                     </li>
                     <li className={isActive("/about-us") ? "active sub-menu" : "sub-menu"}>
                         <Link href="/about-us">About Us</Link>

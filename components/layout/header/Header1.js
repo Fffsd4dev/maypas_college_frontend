@@ -17,20 +17,20 @@ export default function Header1({ scroll, isMobileMenu, handleMobileMenu }) {
                                         </div>
                                         <div className="tgmenu__navbar-wrap tgmenu__main-menu d-none d-xl-flex">
                                             <ul className="navigation">
-                                                <li onClick={handleMobileMenu} className="active "><Link href="/">Home</Link>
+                                                <li className="active "><Link href="/">Home</Link>
                                                     {/* <ul className="sub-menu">
                                                         <li className="active"><Link href="/">Home One</Link></li>
                                                         <li><Link href="/index-2">Home Two</Link></li>
                                                         <li><Link href="/index-3">Home Three</Link></li>
                                                     </ul> */}
                                                 </li>
-                                                <li className="sub-menu"><Link href="/courses">Courses</Link>
-                                                    {/* <ul className="sub-menu">
+                                                <li className="sub-menu"><Link href="/courses">Programmes</Link>
+                                                    <ul className="sub-menu">
                                                         <li><Link href="/courses">All Courses</Link></li>
                                                         <li><Link href="/course-details">Course Details</Link></li>
-                                                    </ul> */}
+                                                    </ul>
                                                 </li>
-                                                <li onClick={handleMobileMenu} className="sub-menu"><Link href="/about-us">About Us</Link>
+                                                <li className="sub-menu"><Link href="/about-us">About Us</Link>
                                                     {/* <ul className="sub-menu">
                                                         <li><Link href="/about-us">About Us</Link></li>
                                                         <li><Link href="/instructors">Our Instructors</Link></li>
@@ -68,7 +68,7 @@ export default function Header1({ scroll, isMobileMenu, handleMobileMenu }) {
                                                         <path d="M12 12H6.85714V6.85714H12V12ZM5.14286 12H0V6.85714H5.14286V12ZM12 5.14286H6.85714V0H12V5.14286ZM5.14286 5.14286H0V0H5.14286V5.14286Z" fill="currentcolor" />
                                                     </svg>
                                                     <select className="form-select" id="course-cat" aria-label="Default select example" style={{ width: 150 }}>
-                                                        <option disabled>Categories</option>
+                                                        <option disabled>Programmes</option>
                                                         <option>Business</option>
                                                         <option value={2}>Data Science</option>
                                                         <option value={3}>Art  Design</option>

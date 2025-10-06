@@ -14,7 +14,7 @@ export default function CourseCategoryTable({ categories, onEdit, onDelete }) {
         <tbody>
           {categories.length === 0 && (
             <tr>
-              <td colSpan={5} style={{ textAlign: 'center' }}>No categories found.</td>
+              <td colSpan={5} style={{ textAlign: 'center' }}>No programmes found.</td>
             </tr>
           )}
           {categories.map((cat) => (

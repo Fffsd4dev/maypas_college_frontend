@@ -65,7 +65,7 @@ export default function Header2({ scroll, isMobileMenu, handleMobileMenu }) {
                                                     <svg width={12} height={12} viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                         <path d="M12 12H6.85714V6.85714H12V12ZM5.14286 12H0V6.85714H5.14286V12ZM12 5.14286H6.85714V0H12V5.14286ZM5.14286 5.14286H0V0H5.14286V5.14286Z" fill="currentcolor" />
                                                     </svg>
-                                                    Browse Categories
+                                                    Browse Programmes
                                                 </Menu.Button>
                                                 <Menu.Items as="ul" className="dropdown-menu d-block" aria-labelledby="dropdownMenuButton1">
                                                     <li><Link className="dropdown-item" href="/courses">Business</Link></li>

@@ -23,7 +23,7 @@ const [preview, setPreview] = useState(
   const fileRef = useRef();
     const validate = () => {
     const errs = {};
-    if (!form.course_category_id) errs.course_category_id = 'Category is required';
+    if (!form.course_category_id) errs.course_category_id = 'Programme is required';
     if (!form.title) errs.title = 'Title is required';
     if (!form.excerpt) errs.excerpt = 'Excerpt is required';
     if (!form.description) errs.description = 'Description is required';
@@ -95,14 +95,14 @@ const [preview, setPreview] = useState(
   return (
     <form className="admin-form" onSubmit={handleSubmit} encType="multipart/form-data">
       <div className="form-group">
-        <label>Category</label>
+        <label>Programme</label>
         <select
           name="course_category_id"
           value={form.course_category_id}
           onChange={handleChange}
           required
         >
-          <option value="">Select Category</option>
+          <option value="">Select Programme </option>
           {categories.map((cat) => (
             <option value={cat.id} key={cat.id}>
               {cat.name}

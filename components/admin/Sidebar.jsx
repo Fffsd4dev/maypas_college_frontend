@@ -39,7 +39,7 @@ export default function Sidebar() {
           <li>
             <Link href="/admin/courseCategory" legacyBehavior>
               <a className={isActive('/admin/courseCategory') ? 'active' : ''}>
-                <FaListAlt className="icon" /> <span className="nav-text">Course Categories</span>
+                <FaListAlt className="icon" /> <span className="nav-text">Programmes</span>
               </a>
             </Link>
           </li>

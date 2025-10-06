@@ -39,7 +39,7 @@ export default function AdminCourseCategory() {
           setFetchError('');
         })
         .catch(() => {
-          setFetchError('Failed to fetch course categories. Please try again later.');
+          setFetchError('Failed to fetch course programmes. Please try again later.');
           setCategories([]);
         })
         .finally(() => setLoading(false));
@@ -56,15 +56,15 @@ export default function AdminCourseCategory() {
   };
 
   const handleDelete = async (id) => {
-    if (confirm('Delete this category?')) {
+    if (confirm('Delete this programme?')) {
       setActionLoading(true);
       try {
         await deleteCategory(id);
         const refreshed = await getCategories();
         setCategories(Array.isArray(refreshed) ? refreshed : refreshed.data || []);
-        toast.success('Category deleted successfully');
+        toast.success('Programme deleted successfully');
       } catch (error) {
-        toast.error('Failed to delete category');
+        toast.error('Failed to delete programme');
       } finally {
         setActionLoading(false);
       }
@@ -79,17 +79,17 @@ export default function AdminCourseCategory() {
         const updated = await updateCategory(editing.id, data);
         const refreshed = await getCategories();
         setCategories(Array.isArray(refreshed) ? refreshed : refreshed.data || []);
-        toast.success('Course Category updated successfully');
+        toast.success('Programme updated successfully');
       } else {
         const created = await createCategory(data);
         const refreshed = await getCategories();
         setCategories(Array.isArray(refreshed) ? refreshed : refreshed.data || []);
-        toast.success('Course Category created successfully');
+        toast.success('Programme created successfully');
       }
       setShowForm(false);
       setEditing(null);
     } catch (error) {
-      toast.error('Failed to save Course Category: ' + error?.message);
+      toast.error('Failed to save Programme: ' + error?.message);
     } finally {
       setActionLoading(false);
     }
@@ -102,7 +102,7 @@ export default function AdminCourseCategory() {
         <main>
           <ToastContainer position="top-right" autoClose={3000} />
           <div className="admin-header">
-            <h1>Course Categories</h1>
+            <h1>Programmes</h1>
           {!showForm && (
             <button
               className="add-btn"
@@ -110,7 +110,7 @@ export default function AdminCourseCategory() {
               disabled={actionLoading}
               style={actionLoading ? { opacity: 0.6, pointerEvents: 'none' } : {}}
             >
-              {actionLoading && !showForm ? 'Loading...' : '+ Add Course Category'}
+              {actionLoading && !showForm ? 'Loading...' : '+ Add Program'}
             </button>
           )}
         </div>

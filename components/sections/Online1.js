@@ -38,7 +38,7 @@ export default function Online1() {
                                 <p>Borem ipsum dolor sit amet, consectetur adipiscing eliawe awUt elit ellus, luctus nec
                                     ullamcorper mattisBorem ipsum dolor awes atnse awctetur.</p>
                                 <div className="tg-button-wrap">
-                                    <Link href="/courses" className="btn tg-svg"><span className="text">See All Categories</span>
+                                    <Link href="/courses" className="btn tg-svg"><span className="text">See All Programmes</span>
                                         <span className="svg-icon" id="online-btn" data-svg-icon="assets/img/icons/btn-arrow.svg" /></Link>
                                 </div>
                                 <img src="/assets/img/objects/online_04.png" alt="shape" className="right-shape position-absolute tg-motion-effects5" />

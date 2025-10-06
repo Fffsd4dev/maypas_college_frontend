@@ -86,7 +86,7 @@ export default function ShopDetails() {
                                                 <span className="code">#CDP21</span>
                                             </li>
                                             <li className="sd-category">
-                                                <span className="title">Categories:</span>
+                                                <span className="title">Programmes:</span>
                                                 <Link href="/shop-details">Business  Marketing</Link>
                                             </li>
                                             <li className="sd-tag">
