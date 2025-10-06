@@ -10,11 +10,11 @@ export default function Banner1() {
                             <div className="banner__content">
                                 <img src="/assets/img/banner/bshape_01.png" alt="shape" className="shape alltuchtopdown" />
                                 <img src="/assets/img/banner/bshape_02.png" alt="shape" className="shape" />
-                                <span className="sub-title" data-aos="fade-right" data-aos-delay={200}>100% Satisfaction
+                                <span className="sub-title" >100% Satisfaction
                                     Guarantee</span>
-                                <h3 className="title tg-svg" data-aos="fade-right" data-aos-delay={400}>Study for a degree or MBA from <span className="position-relative"><span className="svg-icon" id="svg-2" data-svg-icon="assets/img/icons/title_shape.svg" />UK Universities</span>  for less than £5000</h3>
-                                <p data-aos="fade-right" data-aos-delay={600}>Why Maypas College? We offer comprehensive University Pathway Programmes with professional body membership included, free professional development resources, 24/7 access anytime, anywhere on any device, a supportive tutor and mentor structure, and flexible payment options to fit your needs.</p>
-                                <div className="banner__btn-wrap" data-aos="fade-right" data-aos-delay={800}>
+                                <h3 className="title tg-svg" >Study for a degree or MBA from <span className="position-relative"><span className="svg-icon" id="svg-2" data-svg-icon="assets/img/icons/title_shape.svg" />UK Universities</span>  for less than £5000</h3>
+                                <p >Why Maypas College? We offer comprehensive University Pathway Programmes with professional body membership included, free professional development resources, 24/7 access anytime, anywhere on any device, a supportive tutor and mentor structure, and flexible payment options to fit your needs.</p>
+                                <div className="banner__btn-wrap" >
                                     <div className="tg-button-wrap">
                                         <Link href="/courses" className="btn tg-svg"><span className="text">Explore Courses</span>
                                             <span className="svg-icon" id="svg-1" data-svg-icon="assets/img/icons/btn-arrow.svg" /></Link>

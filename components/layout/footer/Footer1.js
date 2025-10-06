@@ -13,8 +13,7 @@ export default function Footer1() {
                                         <div className="footer__logo logo">
                                             <Link href="/"><img src="/assets/img/logo/secondary_logo.png" alt="img" /></Link>
                                         </div>
-                                        <p>when an unknown printer took galley of type and scrambled it to make pspecimen bookt
-                                            has.</p>
+                                        <p>24/7 access anytime, anywhere on any device</p>
                                         <ul className="list-wrap m-0 p-0">
                                             <li className="address">Ground floor, 3 Merus Court, Meridian Business Park, Leicester, LE19 1RJ</li>
                                             <li className="number">+44 7417 473233</li>

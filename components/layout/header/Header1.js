@@ -17,7 +17,7 @@ export default function Header1({ scroll, isMobileMenu, handleMobileMenu }) {
                                         </div>
                                         <div className="tgmenu__navbar-wrap tgmenu__main-menu d-none d-xl-flex">
                                             <ul className="navigation">
-                                                <li className="active "><Link href="/">Home</Link>
+                                                <li onClick={handleMobileMenu} className="active "><Link href="/">Home</Link>
                                                     {/* <ul className="sub-menu">
                                                         <li className="active"><Link href="/">Home One</Link></li>
                                                         <li><Link href="/index-2">Home Two</Link></li>
@@ -30,7 +30,7 @@ export default function Header1({ scroll, isMobileMenu, handleMobileMenu }) {
                                                         <li><Link href="/course-details">Course Details</Link></li>
                                                     </ul> */}
                                                 </li>
-                                                <li className="sub-menu"><Link href="/about-us">About Us</Link>
+                                                <li onClick={handleMobileMenu} className="sub-menu"><Link href="/about-us">About Us</Link>
                                                     {/* <ul className="sub-menu">
                                                         <li><Link href="/about-us">About Us</Link></li>
                                                         <li><Link href="/instructors">Our Instructors</Link></li>
@@ -111,12 +111,12 @@ export default function Header1({ scroll, isMobileMenu, handleMobileMenu }) {
                                             </form> */}
                                         </div>
                                         <div className="tgmobile__menu-outer">
-                                            <MobileMenu />
+    <MobileMenu handleMobileMenu={handleMobileMenu} />
                                         </div>
                                         <div className="tgmenu__action">
                                             <ul className="list-wrap">
-                                                {/* <li className="header-btn login-btn"><Link href="#" className="btn">Log in</Link></li> */}
-                                                <li className="header-btn"><Link href="#" className="btn">Contact Us</Link></li>
+                                                <li className="header-btn login-btn"><Link href="https://maypas.classportal.online/customer/account/login" className="btn">Log in</Link></li>
+                                                <li className="header-btn"><Link href="/contact" className="btn">Contact Us</Link></li>
                                             </ul>
                                         </div>
                                         <div className="social-links">

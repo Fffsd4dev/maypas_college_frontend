@@ -11051,3 +11051,14 @@ body {
     letter-spacing: 1px;
     display: none;
 }
+
+@media (max-width: 767.98px) {
+  .banner__content,
+  .banner-area .col-lg-6 {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    height: auto !important;
+    min-height: 1px !important;
+  }
+}

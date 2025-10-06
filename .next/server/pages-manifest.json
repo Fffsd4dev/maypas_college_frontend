@@ -2,7 +2,9 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
-  "/course/[id]": "pages/course/[id].js",
-  "/courses": "pages/courses.js",
+  "/admin/testimonials": "pages/admin/testimonials.js",
+  "/admin/login": "pages/admin/login.js",
+  "/admin": "pages/admin.js",
+  "/": "pages/index.js",
   "/404": "pages/404.js"
 }

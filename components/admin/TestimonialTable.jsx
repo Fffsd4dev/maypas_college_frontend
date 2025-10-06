@@ -9,6 +9,7 @@ export default function TestimonialTable({ testimonials, onEdit, onDelete }) {
             <th>Course</th>
             <th>Rating</th>
             <th>Content</th>
+            <th>Approval</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -40,7 +41,9 @@ export default function TestimonialTable({ testimonials, onEdit, onDelete }) {
                     }}
                   />
                 ))}
-              </td>              <td style={{ maxWidth: 200, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{testimonial.content}</td>
+              </td>
+              <td style={{ maxWidth: 200, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{testimonial.content}</td>
+              <td>{testimonial.is_approved == 1 ? 'Approved' : 'Pending'}</td>
               <td>
                 <button className="edit-btn" onClick={() => onEdit(testimonial)}>Edit</button>
                 <button className="delete-btn" onClick={() => onDelete(testimonial.id)}>Delete</button>

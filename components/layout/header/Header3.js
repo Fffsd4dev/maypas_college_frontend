@@ -109,12 +109,12 @@ export default function Header3({ scroll, isMobileMenu, handleMobileMenu }) {
                                             </form>
                                         </div>
                                         <div className="tgmobile__menu-outer">
-                                            <MobileMenu />
+    <MobileMenu handleMobileMenu={handleMobileMenu} />
                                         </div>
                                         <div className="tgmenu__action">
                                             <ul className="list-wrap">
-                                                <li className="header-btn login-btn"><Link href="#" className="btn">Log in</Link></li>
-                                                <li className="header-btn"><Link href="#" className="btn">Try For Free</Link></li>
+                                                <li className="header-btn login-btn"><Link href="https://maypas.classportal.online/customer/account/login" className="btn">Log in</Link></li>
+                                                <li className="header-btn"><Link href="/contact" className="btn">Try For Free</Link></li>
                                             </ul>
                                         </div>
                                         <div className="social-links">

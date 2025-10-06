@@ -9,6 +9,7 @@ export default function TestimonialForm({ initial, onSubmit, onCancel, loading }
       content: '',
       rating: '',
       student_photo: null,
+      is_approved: '0',
     }
   );
   useEffect(() => {
@@ -44,6 +45,8 @@ export default function TestimonialForm({ initial, onSubmit, onCancel, loading }
     if (!form.course_id) errs.course_id = 'Course is required';
     if (!form.content) errs.content = 'Content is required';
     if (!form.rating || ![1,2,3,4,5].includes(Number(form.rating))) errs.rating = 'Rating must be 1-5';
+    if (form.is_approved !== '1' && form.is_approved !== '0') errs.is_approved = 'Approval is required';
+
     setErrors(errs);
     return Object.keys(errs).length === 0;
   };
@@ -106,6 +109,15 @@ export default function TestimonialForm({ initial, onSubmit, onCancel, loading }
         <textarea name="content" value={form.content} onChange={handleChange} rows={3} required />
         {errors.content && <span className="err">{errors.content}</span>}
       </div>
+      
+      <div>
+        <label>Approve</label>
+        <select name="is_approved" value={form.is_approved} onChange={handleChange} required>
+          <option value="1">Yes</option>
+          <option value="0">No</option>
+        </select>
+        {errors.is_approved && <span className="err">{errors.is_approved}</span>}
+      </div>
       <div>
         <label>Rating</label>
         <div style={{ display: "flex", alignItems: "center", gap: 4, marginBottom: 8 }}>
@@ -127,8 +139,11 @@ export default function TestimonialForm({ initial, onSubmit, onCancel, loading }
             {form.rating ? `${form.rating} / 5` : ""}
           </span>
         </div>
+
         {errors.rating && <span className="err">{errors.rating}</span>}
       </div>
+
+
       <div className="form-actions">
         <button type="submit" className="save-btn" disabled={loading}>
           {loading

@@ -12,14 +12,14 @@ export default function Contact() {
                                 <div className="col-lg-5">
                                     <div className="contact-info-wrap">
                                         <h2 className="title">Keep In Touch With Us</h2>
-                                        <p>Neque convallis cras semper auctor. Libero id faucibus getnvallis.id faucibus nisl tincidunt egetnvallis.</p>
+                                        <p>Your gateway to affordable, tailored study programs designed to fast-trackYou to a university qualification.</p>
                                         <ul className="list-wrap">
                                             <li>
                                                 <div className="icon">
                                                     <i className="flaticon-pin-1" />
                                                 </div>
                                                 <div className="content">
-                                                    <p>68 Street Holakt Street world <br /> 10002 New York</p>
+                                                    <p>Ground floor, 3 Merus Court, Meridian Business Park, <br /> Leicester, LE19 1RJ</p>
                                                 </div>
                                             </li>
                                             <li>
@@ -27,8 +27,7 @@ export default function Contact() {
                                                     <i className="flaticon-phone-call" />
                                                 </div>
                                                 <div className="content">
-                                                    <Link href="tel:0123456789">+123 555 69090</Link>
-                                                    <Link href="tel:0123456789">+123 555 69090</Link>
+                                                    <Link href="tel:+447417473233">+44 7417 473233</Link>
                                                 </div>
                                             </li>
                                             <li>
@@ -36,8 +35,8 @@ export default function Contact() {
                                                     <i className="flaticon-email" />
                                                 </div>
                                                 <div className="content">
-                                                    <Link href="mailto:info@gmail.com">info@gmail.com</Link>
-                                                    <Link href="mailto:info@gmail.com">info@gmail.com</Link>
+                                                    {/* <Link href="mailto:info@maypascollege.com">info@maypascollege.com</Link> */}
+                                                    <Link href="mailto:info@maypascollege.com">info@maypascollege.com</Link>
                                                 </div>
                                             </li>
                                         </ul>
