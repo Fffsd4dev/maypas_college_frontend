@@ -10,7 +10,10 @@
 *.userosscachex
 *.sln.docstates
 *.env
+*out
+*.next
 out
+.next
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
