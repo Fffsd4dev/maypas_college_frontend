@@ -90,7 +90,7 @@ export default function PortfolioFilter1() {
             className={`col grid-item cat-${course.course_category_id}`}
             key={course.id}
           >
-            <div className="courses__item shine__animate-item">
+            <div className="courses__item shine__animate-item" style={{ minHeight: '450px',  }} >
               <div className="courses__item-thumb">
                 <Link
                   href={`/course/${course.id}`}
@@ -107,6 +107,8 @@ export default function PortfolioFilter1() {
                         : '/assets/img/courses/default.png'
                     }
                     alt="img"
+                                            style= {{ objectFit: 'cover', width: '370px', height: '300px' }}
+
                   />
                 </Link>
               </div>
@@ -123,7 +125,7 @@ export default function PortfolioFilter1() {
                                         {/* <Link href="/instructor-details"><img src="/assets/img/courses/course_author.png" alt="img" /></Link>
                                         <Link href="/instructor-details">David Millar</Link> */}
                                     </div>
-                  <h5 className="price">£{course.price}</h5>
+                  <h5 className="price">£ {course.price}</h5>
                 </div>
               </div>
             </div>

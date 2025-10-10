@@ -1,28 +1,20 @@
 {
   "components\\sections\\Course1.js -> ../elements/PortfolioFilter1": {
-    "id": 1256,
+    "id": "components\\sections\\Course1.js -> ../elements/PortfolioFilter1",
     "files": [
-      "static/chunks/6650.efcf906d2e4dae70.js",
-      "static/chunks/1256.09c685ef19f50a3e.js"
-    ]
-  },
-  "components\\sections\\Course2.js -> ../elements/PortfolioFilter2": {
-    "id": 1301,
-    "files": [
-      "static/chunks/6650.efcf906d2e4dae70.js",
-      "static/chunks/1301.86d6b3edee68e058.js"
+      "static/chunks/_pages-dir-browser_components_elements_PortfolioFilter1_js.js"
     ]
   },
   "node_modules\\next\\dist\\client\\index.js -> ../pages/_app": {
-    "id": 57,
+    "id": "node_modules\\next\\dist\\client\\index.js -> ../pages/_app",
     "files": [
-      "static/chunks/57.268c8c590d7f2802.js"
+      "static/chunks/_pages-dir-browser_node_modules_next_dist_pages__app_js.js"
     ]
   },
   "node_modules\\next\\dist\\client\\index.js -> ../pages/_error": {
-    "id": 4100,
+    "id": "node_modules\\next\\dist\\client\\index.js -> ../pages/_error",
     "files": [
-      "static/chunks/4100.f5b270b131266ebe.js"
+      "static/chunks/_pages-dir-browser_node_modules_next_dist_pages__error_js.js"
     ]
   }
 }

@@ -46,7 +46,7 @@ export default function Categories1() {
                             </div>
                         </div>
                         <div className="col-xl-7 col-lg-9">
-                            <div className="categories__wrap">
+                            <div className="categories__wrap" >
 
                                 <img src="/assets/img/objects/categories_shape03.svg" alt="shape" data-aos="fade-right" />
                                 <img src="/assets/img/objects/categories_shape04.svg" alt="shape" data-aos="fade-left" />
@@ -54,7 +54,7 @@ export default function Categories1() {
   {categories.map((cat, idx) => (
     <div className="col" key={cat.id}>
       <div className="categories__item">
-        <Link href={`/courses?category=${cat.id}`}>
+        <Link href={`/courses?category=${cat.id}`} style={{ minHeight: '275px'  }} >
           <img
             src={
               cat.featured_image_path
@@ -62,7 +62,7 @@ export default function Categories1() {
                 : '/assets/img/objects/categories_shape03.svg'
             }
             alt={cat.name}
-            style={{ width: 48, height: 48, objectFit: 'cover', marginBottom: 10 }}
+            style={{ width: 280, height: 140, objectFit: 'cover', marginBottom: 10 }}
             className="category-icon"
           />
           <span className="name">{cat.name}</span>
