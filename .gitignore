@@ -11,7 +11,7 @@
 *.sln.docstates
 *.env
 out
-*.next
+.next
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
