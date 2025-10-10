@@ -12,8 +12,8 @@
 *.env
 .env
 out
-.next
-*out
+# .next
+# *out
 *.next
 
 # User-specific files (MonoDevelop/Xamarin Studio)
