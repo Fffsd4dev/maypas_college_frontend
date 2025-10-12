@@ -108,3 +108,15 @@ export async function deleteCourse(id) {
   if (!res.ok) throw new Error('Failed to delete course');
   return res.json();
 }
+
+export async function fetchCourse(id) {
+  const token = getToken();
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/course/get/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    }
+  });
+  if (!res.ok) throw new Error('Failed to fetch course');
+  const data = await res.json();
+  return data.data || data;
+}

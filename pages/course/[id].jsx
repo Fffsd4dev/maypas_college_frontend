@@ -549,30 +549,30 @@ const CourseSingle = () => {
             <div className="row">
               <div className="col-lg-8">
                 <div className="courses__breadcrumb-content">
-                  <span className="category" style={{ fontWeight: 600, color: "#4f8cff" }}>
-                    {categoryName}
-                  </span>
-                  <h3 className="title">{course.title}</h3>
-                  <p>{course.excerpt}</p>
-                  <img
-                    src={
-                      course && course.featured_image_path
-                        ? process.env.NEXT_PUBLIC_API_BASE_URL +
-                          "/storage/" +
-                          course.featured_image_path
-                        : "/assets/img/courses/default.png"
-                    }
-                    alt={course ? course.title : "Course image"}
-                    style={{ maxWidth: 300, marginBottom: 20 }}
-                  />
-                  <div>
-                    <strong>Description:</strong>
-                    <p>{course.description}</p>
-                  </div>
-                  <div>
-                    <strong>Price:</strong> ${course.price}
-                  </div>
-                </div>
+  <span className="category" style={{ fontWeight: 600, color: "#4f8cff" }}>
+    {categoryName}
+  </span>
+  <h3 className="title" dangerouslySetInnerHTML={{ __html: course.title }} />
+  <div dangerouslySetInnerHTML={{ __html: course.excerpt }} />
+  <img
+    src={
+      course && course.featured_image_path
+        ? process.env.NEXT_PUBLIC_API_BASE_URL +
+          "/storage/" +
+          course.featured_image_path
+        : "/assets/img/courses/default.png"
+    }
+    alt={course ? course.title : "Course image"}
+    style={{ maxWidth: 300, marginBottom: 20 }}
+  />
+  <div>
+    <strong>Description:</strong>
+    <div dangerouslySetInnerHTML={{ __html: course.description }} />
+  </div>
+  <div>
+    <strong>Price:</strong> ${course.price}
+  </div>
+</div>
               </div>
             </div>
           ) : (
@@ -646,22 +646,20 @@ const CourseSingle = () => {
                   {courseInfoTabs.length > 0 &&
                     courseInfoTabs.map((tab) => (
                       <li className="nav-item" key={tab.key} onClick={() => handleOnClick(tab.key)}>
-                        <button className={activeIndex === tab.key ? "nav-link active" : "nav-link"}>
-                          {tab.label}
-                        </button>
+                        <button className={activeIndex === tab.key ? "nav-link active" : "nav-link"} dangerouslySetInnerHTML={{ __html: tab.label }} />
                       </li>
                     ))}
                 </ul>
-                <div className="tab-content" id="myTabContent">
-                  {courseInfoTabs.length > 0 &&
-                    courseInfoTabs.map((tab) =>
-                      activeIndex === tab.key ? (
-                        <div className="tab-pane active" key={tab.key}>
-                          <div style={{ padding: "1rem" }}>{tab.value}</div>
-                        </div>
-                      ) : null
-                    )}
-                </div>
+               <div className="tab-content" id="myTabContent">
+  {courseInfoTabs.length > 0 &&
+    courseInfoTabs.map((tab) =>
+      activeIndex === tab.key ? (
+        <div className="tab-pane active" key={tab.key}>
+          <div style={{ padding: "1rem" }} dangerouslySetInnerHTML={{ __html: tab.value }} />
+        </div>
+      ) : null
+    )}
+</div>
               </div>
             </div>
             <div className="col-xl-3 col-lg-4">
@@ -729,7 +727,7 @@ const CourseSingle = () => {
                         </div>
                         <div className="rc-post-content">
                           <h4 className="title">
-                            <Link href={`/course/${rc.id}`}>{rc.title}</Link>
+                            <Link href={`/course/${rc.id}`} dangerouslySetInnerHTML={{ __html: rc.title }} />
                           </h4>
                           <span className="price">${rc.price}</span>
                         </div>

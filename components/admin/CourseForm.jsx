@@ -1,4 +1,10 @@
 import { useState, useRef, useEffect } from 'react';
+import dynamic from 'next/dynamic';
+
+const Editor = dynamic(
+  () => import('@tinymce/tinymce-react').then(mod => mod.Editor),
+  { ssr: false, loading: () => <div style={{ minHeight: 80, textAlign: 'center', padding: '2rem' }}>Loading editor...</div> }
+);
 
 export default function CourseForm({ initial = {}, categories = [], onCancel, loading, onSubmit }) {
   const safeInitial = initial || {};
@@ -13,36 +19,15 @@ export default function CourseForm({ initial = {}, categories = [], onCancel, lo
   });
 
   const [errors, setErrors] = useState({});
-const [preview, setPreview] = useState(
-  safeInitial?.featured_image_path
-    ? safeInitial?.featured_image_path.startsWith('http')
-      ? safeInitial.featured_image_path
-      : process.env.NEXT_PUBLIC_API_BASE_URL + '/storage/' + safeInitial.featured_image_path
-    : ''
-);
+  const [preview, setPreview] = useState(
+    safeInitial?.featured_image_path
+      ? safeInitial?.featured_image_path.startsWith('http')
+        ? safeInitial.featured_image_path
+        : process.env.NEXT_PUBLIC_API_BASE_URL + '/storage/' + safeInitial.featured_image_path
+      : ''
+  );
   const fileRef = useRef();
-    const validate = () => {
-    const errs = {};
-    if (!form.course_category_id) errs.course_category_id = 'Programme is required';
-    if (!form.title) errs.title = 'Title is required';
-    if (!form.excerpt) errs.excerpt = 'Excerpt is required';
-    if (!form.description) errs.description = 'Description is required';
-    if (!form.price) errs.price = 'Price is required';
-    setErrors(errs);
-    return Object.keys(errs).length === 0;
-  };
-  const handleImage = (e) => {
-  const file = e.target.files[0];
-  if (file && file.type.startsWith('image/')) {
-    setForm((f) => ({ ...f, featured_image: file })); // <-- use featured_image
-    setPreview(URL.createObjectURL(file));
-  } else {
-    setErrors((errs) => ({ ...errs, featured_image: 'Only image files allowed' }));
-  }
-};
-
-
-  // Handle dynamic course info fields
+   // Handle dynamic course info fields
   const [courseInfo, setCourseInfo] = useState(
     safeInitial.course_info_name && safeInitial.course_info_value
       ? safeInitial.course_info_name.map((name, idx) => ({
@@ -52,13 +37,75 @@ const [preview, setPreview] = useState(
       : [{ name: "", value: "" }]
   );
 
-  const handleChange = (e) => {
-    const { name, value, files } = e.target;
-    if (name === "featured_image") {
-      setForm((f) => ({ ...f, featured_image: files[0] }));
+  // TinyMCE loading state
+  const [editorsLoaded, setEditorsLoaded] = useState(false);
+  const [editorCount, setEditorCount] = useState(0);
+  const totalEditors =
+    5 + // title, excerpt, description, price, at least one info name/value
+    (courseInfo?.length ? (courseInfo.length - 1) * 2 : 0);
+
+ 
+
+useEffect(() => {
+  if (initial && Array.isArray(initial.course_data)) {
+    setCourseInfo(
+      initial.course_data.map(d => ({
+        name: d.course_info_key || "",
+        value: d.course_info_value || ""
+      }))
+    );
+  } else if (initial && initial.course_info_name && initial.course_info_value) {
+    setCourseInfo(
+      initial.course_info_name.map((name, idx) => ({
+        name,
+        value: initial.course_info_value[idx] || "",
+      }))
+    );
+  } else {
+    setCourseInfo([{ name: "", value: "" }]);
+  }
+}, [initial]);
+  useEffect(() => {
+    if (editorCount >= totalEditors) setEditorsLoaded(true);
+  }, [editorCount, totalEditors]);
+
+  const handleEditorInit = () => {
+    setEditorCount(count => count + 1);
+  };
+
+  const validate = () => {
+    const errs = {};
+    if (!form.course_category_id) errs.course_category_id = 'Programme is required';
+    if (!form.title) errs.title = 'Title is required';
+    if (!form.excerpt) errs.excerpt = 'Excerpt is required';
+    if (!form.description) errs.description = 'Description is required';
+    if (!form.price) errs.price = 'Price is required';
+    if (!form.featured_image) errs.featured_image = 'Image is required';
+    setErrors(errs);
+    return Object.keys(errs).length === 0;
+  };
+
+  const handleImage = (e) => {
+    const file = e.target.files[0];
+    if (file && file.type.startsWith('image/')) {
+      if (file.size > 2 * 1024 * 1024) { // 2MB in bytes
+        setErrors((errs) => ({ ...errs, featured_image: 'Image must be less than 2MB' }));
+        setForm((f) => ({ ...f, featured_image: null }));
+        setPreview('');
+        return;
+      }
+      setForm((f) => ({ ...f, featured_image: file }));
+      setPreview(URL.createObjectURL(file));
+      setErrors((errs) => ({ ...errs, featured_image: undefined }));
     } else {
-      setForm((f) => ({ ...f, [name]: value }));
+      setErrors((errs) => ({ ...errs, featured_image: 'Only image files allowed' }));
+      setForm((f) => ({ ...f, featured_image: null }));
+      setPreview('');
     }
+  };
+
+  const handleChange = (name, value) => {
+    setForm((f) => ({ ...f, [name]: value }));
   };
 
   const handleCourseInfoChange = (idx, field, value) => {
@@ -83,14 +130,37 @@ const [preview, setPreview] = useState(
       "course_info_name[]": courseInfo.map((ci) => ci.name),
       "course_info_value[]": courseInfo.map((ci) => ci.value),
     };
-        if (validate()) {
-      
-
-    onSubmit(data);
-        }
+    if (validate()) {
+      onSubmit(data);
+    }
   };
 
+  const tinymceApiKey = process.env.NEXT_PUBLIC_TINYMCE_API_KEY || 'no-api-key';
 
+  // Show loading spinner until all editors are loaded
+  if (!editorsLoaded) {
+    return (
+      <div style={{ textAlign: 'center', padding: '3rem' }}>
+        <div className="spinner" />
+        <div style={{ marginTop: 16 }}>Loading form...</div>
+        <style jsx>{`
+          .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #4f8cff;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+          }
+          @keyframes spin {
+            0% { transform: rotate(0deg);}
+            100% { transform: rotate(360deg);}
+          }
+        `}</style>
+      </div>
+    );
+  }
 
   return (
     <form className="admin-form" onSubmit={handleSubmit} encType="multipart/form-data">
@@ -99,7 +169,7 @@ const [preview, setPreview] = useState(
         <select
           name="course_category_id"
           value={form.course_category_id}
-          onChange={handleChange}
+          onChange={e => handleChange("course_category_id", e.target.value)}
           required
         >
           <option value="">Select Programme </option>
@@ -112,19 +182,67 @@ const [preview, setPreview] = useState(
       </div>
       <div className="form-group">
         <label>Title</label>
-        <input name="title" value={form.title} onChange={handleChange} required />
+        <Editor
+          apiKey={tinymceApiKey}
+          value={form.title}
+          init={{
+            menubar: false,
+            toolbar: 'undo redo | bold italic underline | removeformat',
+            plugins: [],
+            placeholder: "Title",
+            height: 150,
+          }}
+          onEditorChange={content => handleChange("title", content)}
+          onInit={handleEditorInit}
+        />
       </div>
       <div className="form-group">
         <label>Excerpt</label>
-        <input name="excerpt" value={form.excerpt} onChange={handleChange} />
+        <Editor
+          apiKey={tinymceApiKey}
+          value={form.excerpt}
+          init={{
+            menubar: false,
+            toolbar: 'undo redo | bold italic underline | removeformat',
+            plugins: [],
+            placeholder: "Excerpt",
+            height: 150,
+          }}
+          onEditorChange={content => handleChange("excerpt", content)}
+          onInit={handleEditorInit}
+        />
       </div>
       <div className="form-group">
         <label>Description</label>
-        <textarea name="description" value={form.description} onChange={handleChange} required />
+        <Editor
+          apiKey={tinymceApiKey}
+          value={form.description}
+          init={{
+            menubar: true,
+            toolbar: 'undo redo | formatselect | bold italic underline | alignleft aligncenter alignright | bullist numlist outdent indent | removeformat',
+            plugins: 'lists link',
+            placeholder: "Description",
+            height: 250,
+          }}
+          onEditorChange={content => handleChange("description", content)}
+          onInit={handleEditorInit}
+        />
       </div>
       <div className="form-group">
         <label>Price</label>
-        <input name="price" type="number" value={form.price} onChange={handleChange} required />
+        <Editor
+          apiKey={tinymceApiKey}
+          value={form.price.toString()}
+          init={{
+            menubar: false,
+            toolbar: 'undo redo | removeformat',
+            plugins: [],
+            placeholder: "Price",
+            height: 150,
+          }}
+          onEditorChange={content => handleChange("price", content.replace(/[^0-9.]/g, ""))}
+          onInit={handleEditorInit}
+        />
       </div>
       <div className="form-group">
         <label>Featured Image</label>
@@ -137,21 +255,37 @@ const [preview, setPreview] = useState(
         <label>Course Info</label>
         {courseInfo.map((ci, idx) => (
           <div key={idx} style={{ display: "flex", gap: 8, marginBottom: 8 }}>
-            <input
-              type="text"
-              placeholder="Info Name"
+            <Editor
+              apiKey={tinymceApiKey}
               value={ci.name}
-              onChange={(e) => handleCourseInfoChange(idx, "name", e.target.value)}
-              required
-              style={{ flex: 1 }}
+              init={{
+                menubar: false,
+                toolbar: 'undo redo | blocks | ' +
+                  'bold italic forecolor | alignleft aligncenter ' +
+                  'alignright alignjustify | outdent indent | ' +
+                  'removeformat | help',
+                plugins: ['fullscreen lists link'],
+                placeholder: "Info Name",
+                height: 250,
+              }}
+              onEditorChange={content => handleCourseInfoChange(idx, "name", content)}
+              onInit={handleEditorInit}
             />
-            <input
-              type="text"
-              placeholder="Info Value"
+            <Editor
+              apiKey={tinymceApiKey}
               value={ci.value}
-              onChange={(e) => handleCourseInfoChange(idx, "value", e.target.value)}
-              required
-              style={{ flex: 2 }}
+              init={{
+                menubar: true,
+                toolbar: 'undo redo | blocks | ' +
+                  'bold italic forecolor | alignleft aligncenter ' +
+                  'alignright alignjustify | bullist numlist outdent indent | ' +
+                  'removeformat | help',
+                plugins: ['fullscreen lists link'],
+                placeholder: "Info Value",
+                height: 250,
+              }}
+              onEditorChange={content => handleCourseInfoChange(idx, "value", content)}
+              onInit={handleEditorInit}
             />
             <button
               type="button"

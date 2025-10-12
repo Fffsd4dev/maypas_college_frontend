@@ -3,7 +3,7 @@ import Sidebar from '../../components/admin/Sidebar';
 import CourseTable from '../../components/admin/CourseTable';
 import CourseForm from '../../components/admin/CourseForm';
 import { getCategories } from '../../util/courseCategoryApi';
-import { fetchCourses, createCourse, updateCourse, deleteCourse } from '@/util/courseApi';
+import { fetchCourses, createCourse, updateCourse, deleteCourse, fetchCourse } from '@/util/courseApi'; // <-- import fetchCourse
 import AdminProtectedRoute from '@/components/admin/AdminProtectedRoute';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -14,9 +14,8 @@ export default function AdminCourses() {
   const [editing, setEditing] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const [loading, setLoading] = useState(true); // for initial fetch
-    const [actionLoading, setActionLoading] = useState(false); // for add/edit/delete actions
-    const [fetchError, setFetchError] = useState('');
-  
+  const [actionLoading, setActionLoading] = useState(false); // for add/edit/delete actions
+  const [fetchError, setFetchError] = useState('');
 
   useEffect(() => {
     getCategories()
@@ -27,89 +26,103 @@ export default function AdminCourses() {
       .catch(() => setCategories([]));
   }, []);
 
-   useEffect(() => {
-      setLoading(true);
-      fetchCourses()
-        .then((data) => {
-          const coursesArray = Array.isArray(data)
-            ? data
-            : Array.isArray(data?.data)
-            ? data.data
-            : [];
-          setCourses(coursesArray);
-          setFetchError('');
-        })
-        .catch(() => {
-          setFetchError('Failed to fetch courses. Please try again later.');
-          setCourses([]);
-        })
-        .finally(() => setLoading(false));
-    }, []);
-
+  useEffect(() => {
+    setLoading(true);
+    fetchCourses()
+      .then((data) => {
+        const coursesArray = Array.isArray(data)
+          ? data
+          : Array.isArray(data?.data)
+          ? data.data
+          : [];
+        setCourses(coursesArray);
+        setFetchError('');
+      })
+      .catch(() => {
+        setFetchError('Failed to fetch courses. Please try again later.');
+        setCourses([]);
+      })
+      .finally(() => setLoading(false));
+  }, []);
 
   const handleAdd = () => {
     setEditing(null);
     setShowForm(true);
   };
 
-  const handleEdit = (course) => {
-    setEditing(course);
-    setShowForm(true);
-  };
-
-   const handleDelete = async (id) => {
-     if (confirm('Delete this course?')) {
-       setActionLoading(true);
-       try {
-         await deleteCourse(id);
-          const refreshed = await fetchCourses();
-      setCourses(Array.isArray(refreshed) ? refreshed : refreshed.data || []);
-       } catch {
-         toast.error('Failed to delete course.');
-         const refreshed = await fetchCourses();
-      setCourses(Array.isArray(refreshed) ? refreshed : refreshed.data || []);
-       } finally {
-         setActionLoading(false);
-       }
-       setCourses(courses.filter((c) => c.id !== id));
-     }
-   };
-
-
-  const handleSubmit = async (data) => {
+  // Updated handleEdit to fetch single course
+ const handleEdit = async (course) => {
   setActionLoading(true);
   try {
-    if (editing) {
-      const updated = await updateCourse(editing.id, data);
-     const refreshed = await fetchCourses();
-      setCourses(Array.isArray(refreshed) ? refreshed : refreshed.data || []);
-      toast.success('Course updated successfully!');
+    let single = await fetchCourse(course.id);
+    // Transform course_data to course_info_name and course_info_value arrays
+    if (Array.isArray(single.course_data)) {
+      single.course_info_name = single.course_data.map(d => d.course_info_key);
+      single.course_info_value = single.course_data.map(d => d.course_info_value);
     } else {
-      await createCourse(data);
-      // Fetch the latest courses from backend after creation
-      const refreshed = await fetchCourses();
-      setCourses(Array.isArray(refreshed) ? refreshed : refreshed.data || []);
-      toast.success('Course created successfully!');
+      single.course_info_name = [];
+      single.course_info_value = [];
     }
-    setShowForm(false);
-    setEditing(null);
+    setEditing(single);
+    setShowForm(true);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   } catch {
-    toast.error('Failed to save course.');
+    toast.error('Failed to fetch course details.');
   } finally {
     setActionLoading(false);
   }
 };
+  const handleDelete = async (id) => {
+    if (confirm('Delete this course?')) {
+      setActionLoading(true);
+      try {
+        await deleteCourse(id);
+        const refreshed = await fetchCourses();
+        setCourses(Array.isArray(refreshed) ? refreshed : refreshed.data || []);
+      } catch {
+        toast.error('Failed to delete course.');
+        const refreshed = await fetchCourses();
+        setCourses(Array.isArray(refreshed) ? refreshed : refreshed.data || []);
+      } finally {
+        setActionLoading(false);
+      }
+      setCourses(courses.filter((c) => c.id !== id));
+    }
+  };
 
- 
+  const handleSubmit = async (data) => {
+    setActionLoading(true);
+    try {
+      if (editing) {
+        const updated = await updateCourse(editing.id, data);
+        const refreshed = await fetchCourses();
+        setCourses(Array.isArray(refreshed) ? refreshed : refreshed.data || []);
+        toast.success('Course updated successfully!');
+      } else {
+        await createCourse(data);
+        // Fetch the latest courses from backend after creation
+        const refreshed = await fetchCourses();
+        setCourses(Array.isArray(refreshed) ? refreshed : refreshed.data || []);
+        toast.success('Course created successfully!');
+      }
+      setShowForm(false);
+      setEditing(null);
+    } catch {
+      toast.error('Failed to save course.');
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
   return (
-   <AdminProtectedRoute>
-     <div className="admin-layout">
-      <Sidebar />
-      <main>
-        <ToastContainer position="top-right" autoClose={3000} />
-        <div className="admin-header">
-          <h1>Courses</h1>
-        {!showForm && (
+    <AdminProtectedRoute>
+      <div className="admin-layout">
+        <Sidebar />
+        <main>
+          <ToastContainer position="top-right" autoClose={3000} />
+          <div className="admin-header">
+            <h1>Courses</h1>
+            {!showForm && (
               <button
                 className="add-btn"
                 onClick={handleAdd}
@@ -122,7 +135,7 @@ export default function AdminCourses() {
           </div>
           {showForm && (
             <CourseForm
-              initial={editing} 
+              initial={editing}
               categories={categories}
               onCancel={() => { setShowForm(false); setEditing(null); }}
               loading={actionLoading}
@@ -147,41 +160,41 @@ export default function AdminCourses() {
             }}>
               <div style={{ fontSize: 18 }}>Loading...</div>
             </div>
-                  )}
-      </main>
-      <style jsx>{`
-        .admin-layout {
-          display: flex;
-          min-height: 100vh;
-          background: #f5f7fb;
-        }
-        main {
-          flex: 1;
-          padding: 2rem;
-        }
-        .admin-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin-bottom: 2rem;
-        }
-        .add-btn {
-          background: #4f8cff;
-          color: #fff;
-          border: none;
-          padding: 0.7rem 2rem;
-          border-radius: 4px;
-          font-weight: 600;
-          cursor: pointer;
-          font-size: 1rem;
-        }
-                  .add-btn[disabled] { opacity: 0.6; cursor: not-allowed; }
+          )}
+        </main>
+        <style jsx>{`
+          .admin-layout {
+            display: flex;
+            min-height: 100vh;
+            background: #f5f7fb;
+          }
+          main {
+            flex: 1;
+            padding: 2rem;
+          }
+          .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+          }
+          .add-btn {
+            background: #4f8cff;
+            color: #fff;
+            border: none;
+            padding: 0.7rem 2rem;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 1rem;
+          }
+          .add-btn[disabled] { opacity: 0.6; cursor: not-allowed; }
 
-        @media (max-width: 900px) {
-          main { padding: 1rem; width: 70%; }
-        }
-      `}</style>
-    </div>
-   </AdminProtectedRoute>
+          @media (max-width: 900px) {
+            main { padding: 1rem; width: 70%; }
+          }
+        `}</style>
+      </div>
+    </AdminProtectedRoute>
   );
 }

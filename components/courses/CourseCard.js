@@ -23,7 +23,7 @@ export default function CourseCard({ item, categories }) {
             </div>
             <div className="courses__item-content">
                 <h5 className="title">
-                    <Link href={`/course/${item.id}`}>{item.title}</Link>
+                    <Link href={`/course/${item.id}`} dangerouslySetInnerHTML={{ __html: item.title }} />
                 </h5>
                 <div className="courses__item-bottom">
                     <h5 className="price">£ {item.price}</h5>

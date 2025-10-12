@@ -30,8 +30,8 @@ export default function CourseTable({ courses, onEdit, onDelete }) {
                 )}
               </td>
               <td>{course.category?.name || 'No category'}</td>
-              <td>{course.title}</td>
-              <td>{course.excerpt}</td>
+              <td dangerouslySetInnerHTML={{ __html: course.title }} />
+              <td dangerouslySetInnerHTML={{ __html: course.excerpt }} />
               <td>${course.price}</td>
               <td>
                 <button className="edit-btn" onClick={() => onEdit(course)}>Edit</button>
