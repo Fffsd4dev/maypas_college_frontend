@@ -3,7 +3,7 @@ import dynamic from 'next/dynamic';
 
 const Editor = dynamic(
   () => import('@tinymce/tinymce-react').then(mod => mod.Editor),
-  { ssr: false, loading: () => <div style={{ minHeight: 80, textAlign: 'center', padding: '2rem' }}>Loading editor...</div> }
+  { ssr: false }
 );
 
 export default function CourseForm({ initial = {}, categories = [], onCancel, loading, onSubmit }) {
@@ -27,7 +27,8 @@ export default function CourseForm({ initial = {}, categories = [], onCancel, lo
       : ''
   );
   const fileRef = useRef();
-   // Handle dynamic course info fields
+
+  // Handle dynamic course info fields
   const [courseInfo, setCourseInfo] = useState(
     safeInitial.course_info_name && safeInitial.course_info_value
       ? safeInitial.course_info_name.map((name, idx) => ({
@@ -37,41 +38,47 @@ export default function CourseForm({ initial = {}, categories = [], onCancel, lo
       : [{ name: "", value: "" }]
   );
 
-  // TinyMCE loading state
-  const [editorsLoaded, setEditorsLoaded] = useState(false);
-  const [editorCount, setEditorCount] = useState(0);
-  const totalEditors =
-    5 + // title, excerpt, description, price, at least one info name/value
-    (courseInfo?.length ? (courseInfo.length - 1) * 2 : 0);
+  // // TinyMCE loading state
+  // const [editorsLoaded, setEditorsLoaded] = useState(false);
+  // const [editorCount, setEditorCount] = useState(0);
 
- 
+  // // Calculate total editors (5 main + 2 per courseInfo)
+  // const totalEditors = 5 + (courseInfo?.length ? courseInfo.length * 2 : 0);
 
-useEffect(() => {
-  if (initial && Array.isArray(initial.course_data)) {
-    setCourseInfo(
-      initial.course_data.map(d => ({
-        name: d.course_info_key || "",
-        value: d.course_info_value || ""
-      }))
-    );
-  } else if (initial && initial.course_info_name && initial.course_info_value) {
-    setCourseInfo(
-      initial.course_info_name.map((name, idx) => ({
-        name,
-        value: initial.course_info_value[idx] || "",
-      }))
-    );
-  } else {
-    setCourseInfo([{ name: "", value: "" }]);
-  }
-}, [initial]);
+  // // Reset editor count and loading state when courseInfo changes length or initial changes
+  // useEffect(() => {
+  //   setEditorCount(0);
+  //   setEditorsLoaded(false);
+  // }, [courseInfo.length, initial]);
+
   useEffect(() => {
-    if (editorCount >= totalEditors) setEditorsLoaded(true);
-  }, [editorCount, totalEditors]);
+    if (initial && Array.isArray(initial.course_data)) {
+      setCourseInfo(
+        initial.course_data.map(d => ({
+          name: d.course_info_key || "",
+          value: d.course_info_value || ""
+        }))
+      );
+    } else if (initial && initial.course_info_name && initial.course_info_value) {
+      setCourseInfo(
+        initial.course_info_name.map((name, idx) => ({
+          name,
+          value: initial.course_info_value[idx] || "",
+        }))
+      );
+    } else {
+      setCourseInfo([{ name: "", value: "" }]);
+    }
+  }, [initial]);
 
-  const handleEditorInit = () => {
-    setEditorCount(count => count + 1);
-  };
+  // Mark editors loaded as soon as the number of initialized editors matches the number rendered
+  // useEffect(() => {
+  //   if (editorCount >= totalEditors && totalEditors > 0) setEditorsLoaded(true);
+  // }, [editorCount, totalEditors]);
+
+  // const handleEditorInit = () => {
+  //   setEditorCount(count => count + 1);
+  // };
 
   const validate = () => {
     const errs = {};
@@ -137,30 +144,30 @@ useEffect(() => {
 
   const tinymceApiKey = process.env.NEXT_PUBLIC_TINYMCE_API_KEY || 'no-api-key';
 
-  // Show loading spinner until all editors are loaded
-  if (!editorsLoaded) {
-    return (
-      <div style={{ textAlign: 'center', padding: '3rem' }}>
-        <div className="spinner" />
-        <div style={{ marginTop: 16 }}>Loading form...</div>
-        <style jsx>{`
-          .spinner {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #4f8cff;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto;
-          }
-          @keyframes spin {
-            0% { transform: rotate(0deg);}
-            100% { transform: rotate(360deg);}
-          }
-        `}</style>
-      </div>
-    );
-  }
+//  // Only show loading spinner if editors are not loaded
+  // if (!editorsLoaded) {
+  //   return (
+  //     <div style={{ textAlign: 'center', padding: '3rem' }}>
+  //       <div className="spinner" />
+  //       <div style={{ marginTop: 16 }}>Loading form...</div>
+  //       <style jsx>{`
+  //         .spinner {
+  //           border: 4px solid #f3f3f3;
+  //           border-top: 4px solid #4f8cff;
+  //           border-radius: 50%;
+  //           width: 40px;
+  //           height: 40px;
+  //           animation: spin 1s linear infinite;
+  //           margin: 0 auto;
+  //         }
+  //         @keyframes spin {
+  //           0% { transform: rotate(0deg);}
+  //           100% { transform: rotate(360deg);}
+  //         }
+  //       `}</style>
+  //     </div>
+  //   );
+  // }
 
   return (
     <form className="admin-form" onSubmit={handleSubmit} encType="multipart/form-data">
@@ -193,7 +200,7 @@ useEffect(() => {
             height: 150,
           }}
           onEditorChange={content => handleChange("title", content)}
-          onInit={handleEditorInit}
+          // onInit={handleEditorInit}
         />
       </div>
       <div className="form-group">
@@ -209,7 +216,7 @@ useEffect(() => {
             height: 150,
           }}
           onEditorChange={content => handleChange("excerpt", content)}
-          onInit={handleEditorInit}
+          // onInit={handleEditorInit}
         />
       </div>
       <div className="form-group">
@@ -218,14 +225,17 @@ useEffect(() => {
           apiKey={tinymceApiKey}
           value={form.description}
           init={{
-            menubar: true,
-            toolbar: 'undo redo | formatselect | bold italic underline | alignleft aligncenter alignright | bullist numlist outdent indent | removeformat',
+            menubar: false,
+             toolbar: 'undo redo | blocks | ' +
+                  'bold italic forecolor | alignleft aligncenter ' +
+                  'alignright alignjustify | bullist numlist outdent indent | ' +
+                  'removeformat | help',
             plugins: 'lists link',
             placeholder: "Description",
             height: 250,
           }}
           onEditorChange={content => handleChange("description", content)}
-          onInit={handleEditorInit}
+          // onInit={handleEditorInit}
         />
       </div>
       <div className="form-group">
@@ -241,7 +251,7 @@ useEffect(() => {
             height: 150,
           }}
           onEditorChange={content => handleChange("price", content.replace(/[^0-9.]/g, ""))}
-          onInit={handleEditorInit}
+          // onInit={handleEditorInit}
         />
       </div>
       <div className="form-group">
@@ -254,7 +264,7 @@ useEffect(() => {
       <div className="form-group">
         <label>Course Info</label>
         {courseInfo.map((ci, idx) => (
-          <div key={idx} style={{ display: "flex", gap: 8, marginBottom: 8 }}>
+          <div key={idx} style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 16, background: "#b9b9b9", padding: 8, borderRadius: 4 }}>
             <Editor
               apiKey={tinymceApiKey}
               value={ci.name}
@@ -266,16 +276,16 @@ useEffect(() => {
                   'removeformat | help',
                 plugins: ['fullscreen lists link'],
                 placeholder: "Info Name",
-                height: 250,
+                height: 150,
               }}
               onEditorChange={content => handleCourseInfoChange(idx, "name", content)}
-              onInit={handleEditorInit}
+              // onInit={handleEditorInit}
             />
             <Editor
               apiKey={tinymceApiKey}
               value={ci.value}
               init={{
-                menubar: true,
+                menubar: false,
                 toolbar: 'undo redo | blocks | ' +
                   'bold italic forecolor | alignleft aligncenter ' +
                   'alignright alignjustify | bullist numlist outdent indent | ' +
@@ -285,7 +295,7 @@ useEffect(() => {
                 height: 250,
               }}
               onEditorChange={content => handleCourseInfoChange(idx, "value", content)}
-              onInit={handleEditorInit}
+              // onInit={handleEditorInit}
             />
             <button
               type="button"
