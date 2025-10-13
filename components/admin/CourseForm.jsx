@@ -194,7 +194,10 @@ export default function CourseForm({ initial = {}, categories = [], onCancel, lo
           value={form.title}
           init={{
             menubar: false,
-            toolbar: 'undo redo | bold italic underline | removeformat',
+            toolbar:  'undo redo | blocks | ' +
+                  'bold italic forecolor | alignleft aligncenter ' +
+                  'alignright alignjustify | bullist numlist outdent indent | ' +
+                  'removeformat | help',
             plugins: [],
             placeholder: "Title",
             height: 150,
@@ -245,7 +248,7 @@ export default function CourseForm({ initial = {}, categories = [], onCancel, lo
           value={form.price.toString()}
           init={{
             menubar: false,
-            toolbar: 'undo redo | removeformat',
+            toolbar: 'undo redo | bold italic underline | removeformat',
             plugins: [],
             placeholder: "Price",
             height: 150,
