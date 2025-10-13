@@ -1,8 +1,10 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/router"; 
 import {
     addPerPage,
     addSort,
+    addCategory,
     clearCategory,
     clearDifficulty,
     clearInstructor,
@@ -35,8 +37,19 @@ const Allcourses = () => {
     } = courseList || {};
     const { sort, perPage } = courseSort;
     const dispatch = useDispatch();
-
+     const router = useRouter();
+// Sync category from URL to Redux filter state
     useEffect(() => {
+        const { category } = router.query;
+        if (category) {
+            // category can be a string or array (if multiple ?category=)
+            const catArr = Array.isArray(category) ? category : [category];
+            catArr.forEach(catId => {
+                dispatch(addCategory(String(catId)));
+            });
+        }
+    }, [router.query.category, dispatch]);
+     useEffect(() => {
         setLoading(true);
         setError("");
         Promise.all([
@@ -57,9 +70,9 @@ const Allcourses = () => {
 
     // category filter (using backend category id)
     const categoryFilter = (item) =>
-        category?.length !== 0
-            ? category?.includes(String(item.course_category_id))
-            : item;
+    !category || category.length === 0
+        ? true
+        : category.includes(String(item.course_category_id));
 
     // Instructors filter
     const instructorFilter = (item) =>
@@ -139,6 +152,13 @@ const Allcourses = () => {
         dispatch(addSort(""));
         dispatch(addPerPage({ start: 0, end: 0 }));
     };
+
+    useEffect(() => {
+    const { category } = router.query;
+    if (!category) {
+        dispatch(clearCategory());
+    }
+}, [router.query.category, dispatch]);
 
     return (
         <>

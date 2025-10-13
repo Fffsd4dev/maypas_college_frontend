@@ -1,13 +1,34 @@
 import Allcourses from "@/components/courses/Allcourses"
 import FilterCourses from "@/components/courses/FilterCourses"
 import Layout from "@/components/layout/Layout"
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { useRouter } from "next/router";
+import { useDispatch } from "react-redux";
+import { addCategory, clearCategory } from "../features/courseFilterSlice";
 
 export default function Courses() {
     const [activeIndex, setActiveIndex] = useState(1)
     const handleOnClick = (index) => {
         setActiveIndex(index)
     }
+
+    const router = useRouter();
+    const dispatch = useDispatch();
+
+    // Sync Redux filter with URL query
+    useEffect(() => {
+        const { category } = router.query;
+        if (category) {
+            dispatch(clearCategory());
+            const catArr = Array.isArray(category) ? category : [category];
+            catArr.forEach(catId => {
+                dispatch(addCategory(String(catId)));
+            });
+        } else {
+            dispatch(clearCategory());
+        }
+    }, [router.query.category, dispatch]);
+
     return (
         <>
             <Layout headerStyle={3} footerStyle={1} breadcrumbTitle="Our Courses">
@@ -27,7 +48,6 @@ export default function Courses() {
                         </div>
                     </div>
                 </section>
-
             </Layout>
         </>
     )

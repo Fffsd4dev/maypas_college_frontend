@@ -22,20 +22,20 @@ export default function FilterCourses() {
     return (
         <div className="filter-categories">
             <h5>Programmes</h5>
-            <ul>
+            <div className="divider" />
                 {categories.map((cat) => (
-                    <li key={cat.id}>
+                    <p key={cat.id}>
                         <label>
                             <input
                                 type="checkbox"
                                 checked={selectedCategories?.includes(String(cat.id))}
                                 onChange={() => handleCategoryChange(String(cat.id))}
                             />
-                            {cat.name}
+                         {"  "}{cat.name}
                         </label>
-                    </li>
+                    </p>
                 ))}
-            </ul>
+            
         </div>
     );
 }
