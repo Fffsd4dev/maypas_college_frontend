@@ -32,9 +32,9 @@ export default function Banner1() {
                         <div className="col-lg-6">
                             <div className="banner__images">
                                 <img src="/assets/img/banner/banner_img.png" alt="img" className="main-img" />
-                                <img src="/assets/img/banner/bshape_03.png" alt="shape" className="shape" data-aos="fade-down-right" data-aos-delay={1200} />
-                                <img src="/assets/img/banner/bshape_04.png" alt="shape" className="shape" data-aos="fade-right" data-aos-delay={1200} />
-                                <img src="/assets/img/banner/bshape_05.png" alt="shape" className="shape" data-aos="fade-down-left" data-aos-delay={1200} />
+                                {/* <img src="/assets/img/banner/bshape_03.png" alt="shape" className="shape" data-aos="fade-down-right" data-aos-delay={1200} /> */}
+                                {/* <img src="/assets/img/banner/bshape_04.png" alt="shape" className="shape" data-aos="fade-right" data-aos-delay={1200} /> */}
+                                {/* <img src="/assets/img/banner/bshape_05.png" alt="shape" className="shape" data-aos="fade-down-left" data-aos-delay={1200} /> */}
                                 <div className="banner__fact">
                                     <div className="banner__fact-item">
                                         <div className="icon">
@@ -42,7 +42,7 @@ export default function Banner1() {
                                         </div>
                                         <div className="info">
                                             <span>Total Students</span>
-                                            <h4 className="count">15K</h4>
+                                            <h4 className="count">2K+</h4>
                                         </div>
                                     </div>
                                     <div className="banner__fact-item">
@@ -51,7 +51,7 @@ export default function Banner1() {
                                         </div>
                                         <div className="info">
                                             <span>Complete Graduation</span>
-                                            <h4 className="count">34K</h4>
+                                            <h4 className="count">1K+</h4>
                                         </div>
                                     </div>
                                 </div>

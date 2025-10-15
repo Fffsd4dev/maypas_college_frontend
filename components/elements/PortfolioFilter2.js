@@ -48,7 +48,7 @@ export default function PortfolioFilter1() {
                 <div className="row align-items-end">
                     <div className="col-lg-6">
                         <div className="section__title text-center text-lg-start">
-                            <span className="sub-title">10,000+ Unique Online Courses</span>
+                            <span className="sub-title">5,000+ Unique Online Courses</span>
                             <h2 className="title tg-svg">Our <span className="position-relative"><span className="svg-icon" id="svg-4" data-svg-icon="assets/img/icons/title_shape.svg" />Featured</span>
                                 Courses</h2>
                         </div>

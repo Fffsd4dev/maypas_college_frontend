@@ -277,7 +277,7 @@ export default function CourseForm({ initial = {}, categories = [], onCancel, lo
                   'bold italic forecolor | alignleft aligncenter ' +
                   'alignright alignjustify | outdent indent | ' +
                   'removeformat | help',
-                plugins: ['fullscreen lists link'],
+                plugins: ['lists link'],
                 placeholder: "Info Name",
                 height: 150,
               }}
@@ -293,7 +293,7 @@ export default function CourseForm({ initial = {}, categories = [], onCancel, lo
                   'bold italic forecolor | alignleft aligncenter ' +
                   'alignright alignjustify | bullist numlist outdent indent | ' +
                   'removeformat | help',
-                plugins: ['fullscreen lists link'],
+                plugins: ['lists link'],
                 placeholder: "Info Value",
                 height: 250,
               }}

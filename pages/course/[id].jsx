@@ -680,7 +680,7 @@ const CourseSingle = () => {
                   </div>
                   <div className="event-cost-wrap">
                     <h4 className="price">
-                      <strong>Costs:</strong> ${course && course.price ? course.price : "N/A"}
+                      <strong>Costs:</strong> £ {course && course.price ? course.price : "N/A"}
                     </h4>
                     <button
                       onClick={() => setShowEnroll(true)}
@@ -697,8 +697,8 @@ const CourseSingle = () => {
                           Programme <span>{categoryName}</span>
                         </li>
                         <li>
-                          <i className="flaticon-user-1" />
-                          Course ID <span>{course ? course.id : "N/A"}</span>
+                          {/* <i className="flaticon-user-1" />
+                          Course ID <span>{course ? course.id : "N/A"}</span> */}
                         </li>
                       </ul>
                     </div>
@@ -729,7 +729,7 @@ const CourseSingle = () => {
                           <h4 className="title">
                             <Link href={`/course/${rc.id}`} dangerouslySetInnerHTML={{ __html: rc.title }} />
                           </h4>
-                          <span className="price">${rc.price}</span>
+                          <span className="price">£ {rc.price}</span>
                         </div>
                       </div>
                     ))

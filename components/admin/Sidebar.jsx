@@ -44,6 +44,13 @@ export default function Sidebar() {
             </Link>
           </li>
           <li>
+            <Link href="/admin/featuredCourses" legacyBehavior>
+              <a className={isActive('/admin/featuredCourses') ? 'active' : ''}>
+                <FaListAlt className="icon" /> <span className="nav-text">Featured Courses</span>
+              </a>
+            </Link>
+          </li>
+          <li>
             <Link href="/admin/users" legacyBehavior>
               <a className={isActive('/admin/users') ? 'active' : ''}>
                 <FaUser className="icon" /> <span className="nav-text">Users</span>
