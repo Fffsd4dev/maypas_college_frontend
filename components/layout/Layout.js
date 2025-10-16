@@ -46,6 +46,7 @@ export default function Layout({ headerStyle, footerStyle, headTitle, breadcrumb
             {footerStyle == 1 ? < Footer1 /> : null}
 
             <BackToTop />
+
             <DataBg />
         </>
     )

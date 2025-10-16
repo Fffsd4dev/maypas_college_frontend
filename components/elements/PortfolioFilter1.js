@@ -96,13 +96,13 @@ export default function PortfolioFilter1() {
           >
             <div className="courses__item shine__animate-item" style={{ minHeight: '450px',  }} >
               <div className="courses__item-thumb">
-                <Link
+                {/* <Link
                   href={`/course/${course.id}`}
                   className="courses__item-tag"
                   style={{ backgroundColor: '#4f8cff' }}
                 >
                   {categories.find((cat) => String(cat.id) === String(course.course_category_id))?.name || 'Category'}
-                </Link>
+                </Link> */}
                 <Link href={`/course/${course.id}`} className="shine__animate-link">
                   <img
                     src={
