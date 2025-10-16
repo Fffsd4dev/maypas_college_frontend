@@ -15,7 +15,7 @@ export default function CourseForm({ initial = {}, categories = [], onCancel, lo
     excerpt: safeInitial.excerpt || "",
     description: safeInitial.description || "",
     price: safeInitial.price || "",
-    featured_image: safeInitial.featured_image || null,
+    featured_image: safeInitial.featured_image || "",
   });
 
   const [errors, setErrors] = useState({});

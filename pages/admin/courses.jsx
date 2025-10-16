@@ -63,8 +63,8 @@ export default function AdminCourses() {
       single.course_info_value = [];
     }
     setEditing(single);
-    setShowForm(true);
     window.scrollTo({ top: 0, behavior: 'smooth' });
+    setShowForm(true);
   } catch {
     toast.error('Failed to fetch course details.');
   } finally {

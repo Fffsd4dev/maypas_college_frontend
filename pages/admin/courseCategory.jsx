@@ -3,7 +3,7 @@ import AdminProtectedRoute from '@/components/admin/AdminProtectedRoute';
 import Sidebar from '../../components/admin/Sidebar';
 import CourseCategoryTable from '../../components/admin/CourseCategoryTable';
 import CourseCategoryForm from '../../components/admin/CourseCategoryForm';
-import { getCategories, createCategory, updateCategory, deleteCategory } from '../../util/courseCategoryApi';
+import { getCategories, createCategory, updateCategory, deleteCategory, fetchCategory } from '../../util/courseCategoryApi';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -50,9 +50,19 @@ export default function AdminCourseCategory() {
     setShowForm(true);
   };
 
-  const handleEdit = (cat) => {
-    setEditing(cat);
-    setShowForm(true);
+  const handleEdit = async (cat) => {
+    setActionLoading(true);
+     try {
+        let single = await fetchCategory(cat.id);
+        
+        setEditing(single);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        setShowForm(true);
+      } catch {
+        toast.error('Failed to fetch category details.');
+      } finally {
+        setActionLoading(false); // <-- ensure this is set to false after fetching
+      } 
   };
 
   const handleDelete = async (id) => {

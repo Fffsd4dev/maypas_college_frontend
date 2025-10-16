@@ -66,3 +66,15 @@ export async function deleteCategory(id) {
   if (!res.ok) throw new Error('Failed to delete category');
   return res.json();
 }
+
+export async function fetchCategory(id) {
+  const token = getToken();
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/category/get/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    }
+  });
+  if (!res.ok) throw new Error('Failed to fetch category');
+  const data = await res.json();
+  return data.data || data;
+}

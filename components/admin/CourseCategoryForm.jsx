@@ -6,7 +6,7 @@ export default function CourseCategoryForm({ initial, onSubmit, onCancel, loadin
       name: '',
       excerpt: '',
       description: '',
-      featured_image: null,
+      featured_image: '',
     }
   );
       useEffect(() => {
@@ -35,17 +35,27 @@ export default function CourseCategoryForm({ initial, onSubmit, onCancel, loadin
   const handleImage = (e) => {
     const file = e.target.files[0];
     if (file && file.type.startsWith('image/')) {
+      if (file.size > 2 * 1024 * 1024) { // 2MB in bytes
+        setErrors((errs) => ({ ...errs, featured_image: 'Image must be less than 2MB' }));
+        setForm((f) => ({ ...f, featured_image: null }));
+        setPreview('');
+        return;
+      }
       setForm((f) => ({ ...f, featured_image: file }));
       setPreview(URL.createObjectURL(file));
+      setErrors((errs) => ({ ...errs, featured_image: undefined }));
     } else {
       setErrors((errs) => ({ ...errs, featured_image: 'Only image files allowed' }));
+      setForm((f) => ({ ...f, featured_image: null }));
+      setPreview('');
     }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!validate()) return;
+    if (validate()) {
     onSubmit(form);
+    }
   };
 
   return (

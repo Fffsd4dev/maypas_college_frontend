@@ -5,12 +5,6 @@
       "static/chunks/_pages-dir-browser_node_modules_tinymce_tinymce-react_lib_es2015_main_ts_index_js.js"
     ]
   },
-  "components\\admin\\FeaturedCoursesForm.jsx -> @tinymce/tinymce-react": {
-    "id": "components\\admin\\FeaturedCoursesForm.jsx -> @tinymce/tinymce-react",
-    "files": [
-      "static/chunks/_pages-dir-browser_node_modules_tinymce_tinymce-react_lib_es2015_main_ts_index_js.js"
-    ]
-  },
   "node_modules\\next\\dist\\client\\index.js -> ../pages/_app": {
     "id": "node_modules\\next\\dist\\client\\index.js -> ../pages/_app",
     "files": [
