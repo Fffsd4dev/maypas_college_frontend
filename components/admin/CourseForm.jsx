@@ -88,6 +88,7 @@ export default function CourseForm({ initial = {}, categories = [], onCancel, lo
     if (!form.description) errs.description = 'Description is required';
     if (!form.price) errs.price = 'Price is required';
     if (!form.featured_image && !preview) errs.featured_image = 'Image is required';
+    setErrors(errs);
     return Object.keys(errs).length === 0;
   };
 
@@ -204,6 +205,8 @@ export default function CourseForm({ initial = {}, categories = [], onCancel, lo
           onEditorChange={content => handleChange("title", content)}
           // onInit={handleEditorInit}
         />
+        {errors.title && <span className="err">{errors.title}</span>}
+
       </div>
       <div className="form-group">
         <label>Excerpt</label>
@@ -220,6 +223,8 @@ export default function CourseForm({ initial = {}, categories = [], onCancel, lo
           onEditorChange={content => handleChange("excerpt", content)}
           // onInit={handleEditorInit}
         />
+        {errors.excerpt && <span className="err">{errors.excerpt}</span>}
+
       </div>
       <div className="form-group">
         <label>Description</label>
@@ -239,6 +244,7 @@ export default function CourseForm({ initial = {}, categories = [], onCancel, lo
           onEditorChange={content => handleChange("description", content)}
           // onInit={handleEditorInit}
         />
+        {errors.description && <span className="err">{errors.description}</span>}
       </div>
       <div className="form-group">
         <label>Price</label>
@@ -255,6 +261,8 @@ export default function CourseForm({ initial = {}, categories = [], onCancel, lo
           onEditorChange={content => handleChange("price", content.replace(/[^0-9.]/g, ""))}
           // onInit={handleEditorInit}
         />
+        {errors.price && <span className="err">{errors.price}</span>}
+
       </div>
       <div className="form-group">
         <label>Featured Image</label>
@@ -262,6 +270,7 @@ export default function CourseForm({ initial = {}, categories = [], onCancel, lo
         {preview && <img src={preview} alt="preview" style={{ width: 100, marginTop: 8, borderRadius: 6 }} />}
         {errors.featured_image_path && <span className="err">{errors.featured_image_path}</span>}
       </div>
+      
 
       <div className="form-group">
         <label>Course Info</label>

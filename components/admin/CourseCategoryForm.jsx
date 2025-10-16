@@ -22,6 +22,7 @@ export default function CourseCategoryForm({ initial, onSubmit, onCancel, loadin
     if (!form.name) errs.name = 'Name is required';
     if (!form.excerpt) errs.excerpt = 'Excerpt is required';
     if (!form.description) errs.description = 'Description is required';
+    if (!form.featured_image && !preview) errs.featured_image = 'Image is required';
     setErrors(errs);
     return Object.keys(errs).length === 0;
   };
