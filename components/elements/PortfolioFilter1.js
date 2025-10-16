@@ -3,10 +3,11 @@ import Isotope from "isotope-layout"
 import Link from "next/link"
 import { useCallback, useEffect, useRef, useState } from "react"
 import { getCategories } from '../../util/courseCategoryApi';
-import { fetchCourses } from '@/util/courseApi';
+import { fetchFeaturedCourses } from '@/util/featuredCoursesApi';
 
 export default function PortfolioFilter1() {
   const [courses, setCourses] = useState([]);
+  const [featuredCourses, setFeaturedCourse] = useState([]);
   const [categories, setCategories] = useState([]);
 
   useEffect(() => {
@@ -16,14 +17,17 @@ export default function PortfolioFilter1() {
         setCategories(arr);
       })
       .catch(() => setCategories([]));
-    fetchCourses()
+    fetchFeaturedCourses()
       .then((data) => {
         const arr = Array.isArray(data) ? data : data.data || [];
         setCourses(arr);
       })
       .catch(() => setCourses([]));
   }, []);
-      
+
+
+
+  
     // Isotope
     const isotope = useRef()
     const [filterKey, setFilterKey] = useState("*")
@@ -69,8 +73,8 @@ export default function PortfolioFilter1() {
                     </div>
                     <div className="col-lg-6">
                         <div className="courses__nav-active">
-                            <button className={activeBtn("*")} onClick={handleFilterKeyChange("*")}>All Courses <span>New</span></button>
-         {categories.map((cat) => (
+                            {/* <button className={activeBtn("*")} onClick={handleFilterKeyChange("*")}>Featured Courses <span>New</span></button> */}
+         {/* {categories.map((cat) => (
     <button
       key={cat.id}
       className={activeBtn(`cat-${cat.id}`)}
@@ -78,7 +82,7 @@ export default function PortfolioFilter1() {
     >
       {cat.name}
     </button>
-  ))}
+  ))} */}
                         </div>
                     </div>
                 </div>
