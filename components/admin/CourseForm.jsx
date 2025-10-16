@@ -87,8 +87,7 @@ export default function CourseForm({ initial = {}, categories = [], onCancel, lo
     if (!form.excerpt) errs.excerpt = 'Excerpt is required';
     if (!form.description) errs.description = 'Description is required';
     if (!form.price) errs.price = 'Price is required';
-    if (!form.featured_image) errs.featured_image = 'Image is required';
-    setErrors(errs);
+    if (!form.featured_image && !preview) errs.featured_image = 'Image is required';
     return Object.keys(errs).length === 0;
   };
 

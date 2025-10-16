@@ -3,6 +3,6 @@
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
   "/admin": "pages/admin.js",
-  "/admin/courses": "pages/admin/courses.js",
-  "/admin/featuredCourses": "pages/admin/featuredCourses.js"
+  "/admin/featuredCourses": "pages/admin/featuredCourses.js",
+  "/admin/courses": "pages/admin/courses.js"
 }

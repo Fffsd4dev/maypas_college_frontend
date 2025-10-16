@@ -55,7 +55,6 @@ export default function AdminCourses() {
   setActionLoading(true);
   try {
     let single = await fetchCourse(course.id);
-    // Transform course_data to course_info_name and course_info_value arrays
     if (Array.isArray(single.course_data)) {
       single.course_info_name = single.course_data.map(d => d.course_info_key);
       single.course_info_value = single.course_data.map(d => d.course_info_value);
@@ -69,9 +68,10 @@ export default function AdminCourses() {
   } catch {
     toast.error('Failed to fetch course details.');
   } finally {
-    setActionLoading(false);
+    setActionLoading(false); // <-- ensure this is set to false after fetching
   }
 };
+
   const handleDelete = async (id) => {
     if (confirm('Delete this course?')) {
       setActionLoading(true);
@@ -134,14 +134,14 @@ export default function AdminCourses() {
             )}
           </div>
           {showForm && (
-            <CourseForm
-              initial={editing}
-              categories={categories}
-              onCancel={() => { setShowForm(false); setEditing(null); }}
-              loading={actionLoading}
-              onSubmit={handleSubmit}
-            />
-          )}
+  <CourseForm
+    initial={editing}
+    categories={categories}
+    onCancel={() => { setShowForm(false); setEditing(null); }}
+    loading={actionLoading} // <-- fix here
+    onSubmit={handleSubmit}
+  />
+)}
           {fetchError && (
             <div style={{ color: '#ff4f4f', marginBottom: '1rem', textAlign: 'center' }}>
               {fetchError}
