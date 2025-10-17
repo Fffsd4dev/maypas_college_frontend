@@ -89,7 +89,7 @@ export default function Header3({ scroll, isMobileMenu, handleMobileMenu }) {
                         <Link href="/">Home</Link>
                     </li>
                     <li className={isActive("/courses") ? "active" : ""}>
-                        <Link href="/courses">Programmes</Link>
+                        <Link href="">Programmes</Link>
                          <ul className="sub-menu">
                                                         {catLoading ? (
                                                             <li><span>Loading...</span></li>

@@ -14,7 +14,13 @@ export default function CourseCategoryForm({ initial, onSubmit, onCancel, loadin
   }, [initial]);
 
   const [errors, setErrors] = useState({});
-  const [preview, setPreview] = useState(initial?.featured_image || '');
+  const [preview, setPreview] = useState(
+  initial?.featured_image_path
+      ? initial?.featured_image_path.startsWith('http')
+        ? initial.featured_image_path
+        : process.env.NEXT_PUBLIC_API_BASE_URL + '/storage/' + initial.featured_image_path
+      : ''
+  );
   const fileRef = useRef();
 
   const validate = () => {

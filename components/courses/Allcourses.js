@@ -122,8 +122,14 @@ const Allcourses = () => {
         .slice(perPage.start, perPage.end !== 0 ? perPage.end : 12)
         ?.map((item) => (
             <div className="col" key={item.id}>
-                <CourseCard item={item} categories={categories} />
-            </div>
+ <CourseCard 
+            item={item} 
+            categories={categories.map(cat => ({
+                ...cat,
+                name: cat.name?.endsWith('s') ? cat.name.slice(0, -1) : cat.name
+            }))} 
+        />
+                    </div>
         ));
 
     // sort handler

@@ -69,7 +69,7 @@ export async function deleteCategory(id) {
 
 export async function fetchCategory(id) {
   const token = getToken();
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/category/get/${id}`, {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/contents/get/category/${id}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     }

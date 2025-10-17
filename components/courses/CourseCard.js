@@ -1,8 +1,15 @@
 import Link from "next/link";
 
 export default function CourseCard({ item, categories }) {
-    const categoryName =
-        categories?.find((cat) => String(cat.id) === String(item.course_category_id))?.name || "Category";
+    // Get category name and remove 's' if it exists
+    const categoryName = categories
+        ?.find((cat) => String(cat.id) === String(item.course_category_id))
+        ?.name?.endsWith('S') 
+        ? categories
+            .find((cat) => String(cat.id) === String(item.course_category_id))
+            .name.slice(0, -1) 
+        : categories?.find((cat) => String(cat.id) === String(item.course_category_id))?.name || "Category";
+
     return (
         <div className="courses__item shine__animate-item"  style={{ minHeight: '500px',  }} >
             <div className="courses__item-thumb">
