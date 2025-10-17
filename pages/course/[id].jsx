@@ -549,11 +549,11 @@ const CourseSingle = () => {
             <div className="row">
               <div className="col-lg-8">
                 <div className="courses__breadcrumb-content">
-  <span className="category" style={{ fontWeight: 600, color: "#4f8cff" }}>
+  <span className="category" style={{ fontWeight: 600, color: "#fff" }}>
     {categoryName}
   </span>
   <h3 className="title" dangerouslySetInnerHTML={{ __html: course.title }} />
-  <div dangerouslySetInnerHTML={{ __html: course.excerpt }} />
+  <div style={{ color: "#fff" }} dangerouslySetInnerHTML={{ __html: course.excerpt }} />
   <img
     src={
       course && course.featured_image_path
@@ -565,11 +565,11 @@ const CourseSingle = () => {
     alt={course ? course.title : "Course image"}
     style={{ maxWidth: 300, marginBottom: 20 }}
   />
-  <div>
+  <div style={{ color: "#fff" }}>
     <strong>Description:</strong>
     <div dangerouslySetInnerHTML={{ __html: course.description }} />
   </div>
-  <div>
+  <div style={{ color: "#fff" }}>
     <strong>Price:</strong> ${course.price}
   </div>
 </div>
