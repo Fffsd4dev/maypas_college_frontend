@@ -70,9 +70,10 @@ export default function Faq() {
                                                         className={isActive.key === idx ? "accordion-collapse collapse show" : "accordion-collapse collapse"}
                                                         data-bs-parent="#accordionExample"
                                                     >
-                                                        <div className="accordion-body">
-                                                            <p>{faq.answer}</p>
-                                                        </div>
+                                                        <div
+    className="accordion-body"
+    dangerouslySetInnerHTML={{ __html: faq.answer }}
+/>
                                                     </div>
                                                 </div>
                                             ))
