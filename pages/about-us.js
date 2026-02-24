@@ -61,8 +61,7 @@ export default function AboutUs() {
         {
             img: "/assets/img/maypas_credentials/ofqual.jpeg",
             title: "OFQUAL Recognised Partnerships",
-            desc: "OFQUAL (The Office of Qualifications and Examinations Regulation) oversees qualifications, examinations, and assessments in England. Maypas College works in partnership with Ofqual-recognised awarding organisations to ensure independent verification and quality assurance of all programmes. Our Partnership with Ofqual guarantees that students receive a high-quality education and internationally respected certification, widely accepted by universities and employers worldwide."
-         }
+            desc: "OFQUAL (The Office of Qualifications and Examinations Regulation) oversees qualifications, examinations, and assessments in England. Maypas College collaborates with Ofqual to ensure independent verification and quality assurance of all programmes. Our Partnership with Ofqual guarantees that students receive a high-quality education and internationally respected certification, widely accepted by universities and employers worldwide."  }
     ];
 
     const sliderSettings = {
