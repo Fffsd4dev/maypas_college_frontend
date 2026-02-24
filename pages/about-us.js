@@ -8,56 +8,56 @@ import "slick-carousel/slick/slick-theme.css";
 
 export default function AboutUs() {
           const factItems = [
-        {
-            img: "/assets/img/maypas_credentials/othm.png",
-            title: "OTHM Qualifications Recognition",
-            desc: "Organisation for Tourism and Hospitality Management is a UK based Awarding Organisation regulated by Ofqual. They have a network of numerous delivery centres globally to deliver their approved qualifications."
-        },
-        {
-            img: "/assets/img/maypas_credentials/athe.jpg",
-            title: "ATHE Recognition",
-            desc: "Awards for Training and Higher Education provides centres with a wide variety of qualifications including, but not limited to; administration management, business, tourism, law, computing and health and social care. ATHE have made a name for themselves with exceptional customer service, excellent quality standards and rewarding qualifications with progression routes to university degrees."
-        },
-        {
-            img: "/assets/img/maypas_credentials/coventry.jpg",
-            title: "Coventry and Warwickshire Chamber of Commerce",
-            desc: "The British Chambers of Commerce is the largest, most influential independent business voice in the UK who lobby tirelessly on behalf of members and the wider business community on the issues that matter – establishing the right conditions for business to thrive, promoting UK firms in key global markets and creating a dynamic business economy."
-        },
+        // {
+        //     img: "/assets/img/maypas_credentials/othm.png",
+        //     title: "OTHM Qualifications Recognition",
+        //     desc: "Organisation for Tourism and Hospitality Management is a UK based Awarding Organisation regulated by Ofqual. They have a network of numerous delivery centres globally to deliver their approved qualifications."
+        // },
+        // {
+        //     img: "/assets/img/maypas_credentials/athe.jpg",
+        //     title: "ATHE Recognition",
+        //     desc: "Awards for Training and Higher Education provides centres with a wide variety of qualifications including, but not limited to; administration management, business, tourism, law, computing and health and social care. ATHE have made a name for themselves with exceptional customer service, excellent quality standards and rewarding qualifications with progression routes to university degrees."
+        // },
+        // {
+        //     img: "/assets/img/maypas_credentials/coventry.jpg",
+        //     title: "Coventry and Warwickshire Chamber of Commerce",
+        //     desc: "The British Chambers of Commerce is the largest, most influential independent business voice in the UK who lobby tirelessly on behalf of members and the wider business community on the issues that matter – establishing the right conditions for business to thrive, promoting UK firms in key global markets and creating a dynamic business economy."
+        // },
         {
             img: "/assets/img/maypas_credentials/QualifiApproved-Final..jpeg",
             title: "Qualifi Recognition",
             desc: "As a recognised UK awarding organisation regulated in England by Office of Qualifications and Examinations Regulation (Ofqual), Council for the Curriculum, Examinations and Assessment (CCEA) in Northern Ireland and Qualifications Wales (QW), Qualifi is able to give assurances to registered centres and learners of consistent, rigorous, quality standards and valid, valued learning."
         },
-        {
-            img: "/assets/img/maypas_credentials/cyber-essentials-logo.jpg",
-            title: "Cyber Essentials",
-            desc: "The certificate certifies that the organization was assessed as meeting the Cyber Essentials implementation profile and thus that, at the time of testing, the organization’s ICT defences were assessed as satisfactory against commodity based cyber attack. However this certificate does not any way guarantee that the organization’s defences will remain satisfactory against a cyber attack."
-        },
-        {
-            img: "/assets/img/maypas_credentials/IOD-logo-1.jpg",
-            title: "Institute of Directors",
-            desc: "The Institute of Directors is a business organisation for company directors, senior business leaders and entrepreneurs. It is the UK’s longest running organisation for professional leaders, having been founded in 1903 and incorporated by Royal Charter in 1906."
-        },
-        {
-            img: "/assets/img/maypas_credentials/instHospital.jpeg",
-            title: "Institute of Hospitality",
-            desc: "Institute of Hospitality is the professional body for managers working and studying in the hospitality, leisure and tourism industry.​"
-        },
-        {
-            img: "/assets/img/maypas_credentials/ersa.jpg",
-            title: "Employment Related Services Association",
-            desc: "The Employment Related Services Association (ERSA) is the membership body for the employment support sector.  Established in 2005, we campaign for and support the delivery of ever better services for the nation’s jobseekers and learners."
-        },
-        {
-            img: "/assets/img/maypas_credentials/Matrix-QM-Black.jpg",
-            title: "Matrix Standard",
-            desc: "The matrix Standard is the Department for Education’s (DfE) standard for ensuring the quality of the delivery of high-quality information, advice and guidance. It is the international quality standard for organisations that deliver information, advice and/or guidance (IAG). Either as their sole purpose or as part of their service offering."
-        },
-        {
-            img: "/assets/img/maypas_credentials/bcs.jpg",
-            title: "BCS, The Chartered Institute for IT",
-            desc: "BCS, The Chartered Institute for IT, is a professional body and a learned society that represents those working in information technology and computer science, both in the United Kingdom and internationally."
-        },
+        // {
+        //     img: "/assets/img/maypas_credentials/cyber-essentials-logo.jpg",
+        //     title: "Cyber Essentials",
+        //     desc: "The certificate certifies that the organization was assessed as meeting the Cyber Essentials implementation profile and thus that, at the time of testing, the organization’s ICT defences were assessed as satisfactory against commodity based cyber attack. However this certificate does not any way guarantee that the organization’s defences will remain satisfactory against a cyber attack."
+        // },
+        // {
+        //     img: "/assets/img/maypas_credentials/IOD-logo-1.jpg",
+        //     title: "Institute of Directors",
+        //     desc: "The Institute of Directors is a business organisation for company directors, senior business leaders and entrepreneurs. It is the UK’s longest running organisation for professional leaders, having been founded in 1903 and incorporated by Royal Charter in 1906."
+        // },
+        // {
+        //     img: "/assets/img/maypas_credentials/instHospital.jpeg",
+        //     title: "Institute of Hospitality",
+        //     desc: "Institute of Hospitality is the professional body for managers working and studying in the hospitality, leisure and tourism industry.​"
+        // },
+        // {
+        //     img: "/assets/img/maypas_credentials/ersa.jpg",
+        //     title: "Employment Related Services Association",
+        //     desc: "The Employment Related Services Association (ERSA) is the membership body for the employment support sector.  Established in 2005, we campaign for and support the delivery of ever better services for the nation’s jobseekers and learners."
+        // },
+        // {
+        //     img: "/assets/img/maypas_credentials/Matrix-QM-Black.jpg",
+        //     title: "Matrix Standard",
+        //     desc: "The matrix Standard is the Department for Education’s (DfE) standard for ensuring the quality of the delivery of high-quality information, advice and guidance. It is the international quality standard for organisations that deliver information, advice and/or guidance (IAG). Either as their sole purpose or as part of their service offering."
+        // },
+        // {
+        //     img: "/assets/img/maypas_credentials/bcs.jpg",
+        //     title: "BCS, The Chartered Institute for IT",
+        //     desc: "BCS, The Chartered Institute for IT, is a professional body and a learned society that represents those working in information technology and computer science, both in the United Kingdom and internationally."
+        // },
         // {
         //     img: "/assets/img/",
         //     title: "OFQUAL Recognised Partnerships",
