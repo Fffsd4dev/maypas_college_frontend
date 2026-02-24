@@ -58,11 +58,10 @@ export default function AboutUs() {
         //     title: "BCS, The Chartered Institute for IT",
         //     desc: "BCS, The Chartered Institute for IT, is a professional body and a learned society that represents those working in information technology and computer science, both in the United Kingdom and internationally."
         // },
-        // {
-        //     img: "/assets/img/",
-        //     title: "OFQUAL Recognised Partnerships",
-        //     desc: "All learning materials are designed and written by professional academic authors so that each interactive module is aligned against specific learning criteria specified by OFQUAL .The Office of Qualifications and Examinations Regulation regulates qualifications, examinations and assessments in England. Maypas College works with OFQUAL recognised Awarding Organisations for the verification of our programmes. These standards ensure those that learn with us receive a high quality education along with certification that is recognised universally by Universities and employers.",
-        // }
+        {
+            img: "/assets/img/maypas_credentials/ofqual.jpeg",
+            title: "OFQUAL Recognised Partnerships",
+            desc: "OFQUAL (The Office of Qualifications and Examinations Regulation) oversees qualifications, examinations, and assessments in England. Maypas College works in partnership with Ofqual-recognised awarding organisations to ensure independent verification and quality assurance of all programmes. Our Partnership with Ofqual guarantees that students receive a high-quality education and internationally respected certification, widely accepted by universities and employers worldwide." }
     ];
 
     const sliderSettings = {
